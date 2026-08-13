@@ -19,21 +19,45 @@ const plexMono = IBM_Plex_Mono({
   weight: ["400", "500", "600"],
 });
 
-const title = `${site.name} — Junk Removal & Cleanouts in Wilmington`;
+/**
+ * Keyword-led rather than brand-led, and kept under ~60 characters so Google
+ * doesn't truncate it in results. Nobody searches "Castle Clean" yet; they
+ * search "junk removal wilmington nc".
+ */
+const title = "Junk Removal & Cleanouts in Wilmington, NC | Castle Clean";
 
 export const metadata: Metadata = {
   metadataBase: new URL(siteUrl),
-  title,
+  title: {
+    default: title,
+    // Short suffix on purpose: the full business name added 27 characters and
+    // pushed every sub-page title past the ~60 Google renders before cutting.
+    template: `%s | ${site.shortName}`,
+  },
   description: site.subhead,
   applicationName: site.name,
+  // Vercel serves identical content on preview and www/apex variants; without
+  // a canonical those compete with each other for the same terms.
+  alternates: { canonical: "/" },
   openGraph: {
     title,
     description: site.subhead,
     siteName: site.name,
-    images: [{ url: "/logo.jpg", width: 640, height: 640, alt: site.name }],
+    url: siteUrl,
+    locale: "en_US",
     type: "website",
   },
-  robots: { index: true, follow: true },
+  twitter: { card: "summary_large_image", title, description: site.subhead },
+  robots: {
+    index: true,
+    follow: true,
+    googleBot: {
+      index: true,
+      follow: true,
+      "max-image-preview": "large",
+      "max-snippet": -1,
+    },
+  },
 };
 
 export const viewport: Viewport = {

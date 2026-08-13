@@ -1,7 +1,11 @@
 import Image from "next/image";
+import Link from "next/link";
 
-import LocalBusinessSchema from "@/components/LocalBusinessSchema";
 import QuoteForm from "@/components/QuoteForm";
+import SiteFooter from "@/components/SiteFooter";
+import SiteHeader from "@/components/SiteHeader";
+import StructuredData from "@/components/StructuredData";
+import { SERVICE_PAGES } from "@/lib/services";
 import { site } from "@/lib/site";
 
 import constructionDebris from "@/images/work/construction-debris.jpg";
@@ -40,52 +44,9 @@ const gallery = [
 export default function Home() {
   return (
     <div className="min-h-screen bg-canvas">
-      <LocalBusinessSchema />
+      <StructuredData />
 
-      <header className="sticky top-0 z-50 border-b border-line bg-canvas/95 backdrop-blur">
-        <div className="mx-auto flex max-w-6xl items-center justify-between gap-4 px-5 py-3">
-          <a href="#top" className="flex items-center gap-2.5">
-            <Image
-              src="/logo.jpg"
-              alt=""
-              width={44}
-              height={44}
-              priority
-              className="h-11 w-11 rounded-lg object-cover"
-            />
-            <span className="u-display text-base leading-none text-ink sm:text-lg">
-              {site.shortName}
-              <span className="u-eyebrow mt-1 block text-[10px] font-semibold text-accent">
-                Junk Removal
-              </span>
-            </span>
-          </a>
-
-          <nav className="hidden items-center gap-7 md:flex" aria-label="Main">
-            {[
-              ["Services", "#services"],
-              ["Pricing", "#pricing"],
-              ["Our work", "#work"],
-              ["Questions", "#faq"],
-            ].map(([label, href]) => (
-              <a
-                key={href}
-                href={href}
-                className="flex min-h-11 items-center text-sm font-semibold text-muted transition hover:text-ink"
-              >
-                {label}
-              </a>
-            ))}
-          </nav>
-
-          <a
-            href="#quote"
-            className="u-cta flex min-h-11 items-center rounded-lg bg-accent px-4 text-sm font-bold text-accent-ink transition hover:bg-accent-strong"
-          >
-            Get a price
-          </a>
-        </div>
-      </header>
+      <SiteHeader />
 
       <main id="top">
         {/* ---------------- Hero ---------------- */}
@@ -225,21 +186,29 @@ export default function Home() {
               If you want it gone, it&apos;s on the list.
             </h2>
 
-            <div className="mt-12 grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
-              {site.services.map((service) => (
-                <div
-                  key={service.title}
-                  className="u-card border border-line bg-canvas p-6"
-                >
-                  <h3 className="u-display text-lg text-ink">
-                    {service.title}
-                  </h3>
-                  <p className="mt-2.5 text-sm leading-relaxed text-muted">
-                    {service.body}
-                  </p>
-                </div>
+            {/* Each card links to its own page — that's what lets the site
+                rank for "hot tub removal wilmington" as well as "junk
+                removal", and it spreads signal to the deeper pages. */}
+            <ul className="mt-12 grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
+              {SERVICE_PAGES.map((service) => (
+                <li key={service.slug}>
+                  <Link
+                    href={`/services/${service.slug}`}
+                    className="u-card flex h-full flex-col border border-line bg-canvas p-6 transition hover:bg-accent-soft"
+                  >
+                    <h3 className="u-display text-lg text-ink">
+                      {service.name}
+                    </h3>
+                    <p className="mt-2.5 flex-1 text-sm leading-relaxed text-muted">
+                      {service.lede}
+                    </p>
+                    <span className="u-eyebrow mt-4 text-[10px] text-accent">
+                      Read more →
+                    </span>
+                  </Link>
+                </li>
               ))}
-            </div>
+            </ul>
           </div>
         </section>
 
@@ -420,56 +389,8 @@ export default function Home() {
         </section>
       </main>
 
-      <footer className="border-t border-inverse-ink/10 bg-inverse">
-        <div className="mx-auto max-w-6xl px-5 py-14">
-          <div className="flex flex-col justify-between gap-10 sm:flex-row">
-            <div className="flex items-start gap-4">
-              <Image
-                src="/logo.jpg"
-                alt=""
-                width={56}
-                height={56}
-                className="h-14 w-14 rounded-lg object-cover"
-              />
-              <div>
-                <p className="u-display text-lg text-inverse-ink">
-                  {site.name}
-                </p>
-                <p className="u-eyebrow mt-1 text-[10px] text-inverse-accent">
-                  {site.slogan}
-                </p>
-                <p className="mt-3 max-w-sm text-sm leading-relaxed text-inverse-muted">
-                  Serving {site.serviceArea}. {site.hours}.
-                </p>
-              </div>
-            </div>
 
-            <div className="text-sm">
-              <p className="u-eyebrow text-[10px] text-inverse-dim">Contact</p>
-              <p className="mt-2">
-                <a
-                  href={`mailto:${site.email}`}
-                  className="inline-flex min-h-11 items-center font-semibold text-inverse-accent transition hover:text-inverse-ink"
-                >
-                  {site.email}
-                </a>
-              </p>
-              <p className="mt-3">
-                <a
-                  href="#quote"
-                  className="u-cta inline-block rounded-lg bg-accent px-5 py-2.5 font-bold text-accent-ink transition hover:bg-accent-strong"
-                >
-                  Get a price
-                </a>
-              </p>
-            </div>
-          </div>
-
-          <p className="mt-12 border-t border-inverse-ink/10 pt-6 font-mono text-[11px] text-inverse-dim">
-            © {new Date().getFullYear()} {site.name}. All rights reserved.
-          </p>
-        </div>
-      </footer>
+      <SiteFooter />
     </div>
   );
 }
