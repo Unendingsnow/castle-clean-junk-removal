@@ -367,6 +367,63 @@ better** on the navy footer and sharpen the favicon.
 That's the whole deploy. No post-deploy commands, and every subsequent release
 is just a `git push`.
 
+---
+
+## Launch checklist (when the domain lands)
+
+In order. Steps 1–4 are the ones that actually affect ranking, and doing them
+out of order means Google indexes the wrong hostname first.
+
+**1. Attach the domain in Vercel**
+Settings → Domains → Add. Point GoDaddy DNS at the records Vercel shows.
+Set one variant as primary (apex or `www`, either is fine) so the other
+redirects — two live hostnames serving the same content split your ranking.
+
+**2. Set `NEXT_PUBLIC_SITE_URL` and redeploy** ← *easy to forget, costly*
+```
+NEXT_PUBLIC_SITE_URL=https://thedomain.com
+```
+Without it, canonical tags and the sitemap keep pointing at the `.vercel.app`
+host, which tells Google the preview domain is the real site. A production
+build with an unset value logs a warning. Redeploy after setting it —
+canonicals are baked in at build time.
+
+**3. Google Search Console**
+Add the domain as a property, verify (DNS is easiest and survives host
+changes), then submit `https://thedomain.com/sitemap.xml`. Use **URL
+Inspection → Request indexing** on the homepage and the trailer rental page to
+skip the initial crawl wait.
+
+If verifying by HTML tag instead, set `GOOGLE_SITE_VERIFICATION` and redeploy.
+
+**4. Google Business Profile**
+The profile already exists. Connecting the domain is the smallest part of it:
+
+- Put the new domain in the **Website** field
+- **Primary category: "Junk removal service"** — this is the single highest-
+  impact field on the whole profile. Add "Dumpster rental service" as a
+  secondary so the trailer offer is discoverable too.
+- Define the **service area** as the towns in `site.seo.areasServed`, and keep
+  the two lists matching
+- Add the **Services** list mirroring `/services`, with the $300 trailer price
+- Upload the real job photos from `example/` — profiles with genuine photos
+  get materially more engagement than logo-only ones
+- Seed the **Q&A** section with the same questions as the site FAQ
+
+**5. Reviews**
+The two national competitors show 4.9 stars from thousands of reviews. This is
+the largest remaining gap and the only one that can't be built — it has to be
+asked for. A short link sent right after each completed job is the whole
+tactic. Once real reviews exist, `AggregateRating` schema can be added to
+`StructuredData.tsx`; **never** before, because inventing it is a manual-action
+risk.
+
+**6. Confirm before going live**
+
+- `site.email` — supplied as `castleclean843@gmal.com`, missing the "i"
+- `site.seo.areasServed` — currently inferred from the 910 area code
+- `site.seo.postalAddress` — fill in or leave `null`, but don't invent one
+
 ### GoDaddy — domain only, not hosting
 
 **GoDaddy shared/cPanel hosting cannot run this site.** It serves static files

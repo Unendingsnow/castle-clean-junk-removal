@@ -58,6 +58,12 @@ export const metadata: Metadata = {
       "max-snippet": -1,
     },
   },
+  // Search Console ownership. Set GOOGLE_SITE_VERIFICATION once the property
+  // is created; the tag is simply omitted until then. Verifying by DNS instead
+  // is fine and makes this unnecessary.
+  ...(process.env.GOOGLE_SITE_VERIFICATION
+    ? { verification: { google: process.env.GOOGLE_SITE_VERIFICATION } }
+    : {}),
 };
 
 export const viewport: Viewport = {
