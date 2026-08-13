@@ -3,7 +3,9 @@ import { NextResponse } from "next/server";
 import {
   ADDRESS_MAX,
   ALLOWED_IMAGE_TYPES,
+  DEFAULT_JOB_TYPE,
   DEFAULT_URGENCY,
+  JOB_TYPES,
   DESCRIPTION_MAX,
   DESCRIPTION_MIN,
   EMAIL_MAX,
@@ -24,6 +26,7 @@ import {
   noteSubmission,
   peekRateLimit,
 } from "@/lib/rate-limit";
+import { site } from "@/lib/site";
 import {
   escapeHtml,
   TelegramClient,
@@ -90,6 +93,7 @@ type Lead = {
   email: string;
   town: string;
   address: string;
+  jobType: string;
   urgency: string;
   description: string;
   photoCount: number;
@@ -101,9 +105,12 @@ function buildMessage(lead: Lead): string {
     URGENCY_OPTIONS.find((option) => option.value === lead.urgency) ??
     URGENCY_OPTIONS.find((option) => option.value === DEFAULT_URGENCY)!;
 
+  const job =
+    JOB_TYPES.find((option) => option.value === lead.jobType) ?? JOB_TYPES[0];
+
   const lines: string[] = [];
 
-  lines.push(urgency.flag);
+  lines.push(`<b>${job.flag}</b>  ·  ${urgency.flag}`);
 
   if (lead.repeatCount > 1) {
     lines.push(
@@ -116,8 +123,7 @@ function buildMessage(lead: Lead): string {
 
   // The number sits alone on its own line with no surrounding characters --
   // that's what lets Telegram clients detect it and make it tap-to-call.
-  lines.push(escapeHtml(formatPhone(lead.phone)));
-
+  if (lead.phone) lines.push(escapeHtml(formatPhone(lead.phone)));
   if (lead.email) lines.push(escapeHtml(lead.email));
 
   lines.push("");
@@ -162,7 +168,7 @@ export async function POST(request: Request) {
           .join(", "),
     );
     return bad(
-      "This form isn't configured yet. Please call us instead.",
+      `This form isn't working right now. Please email us at ${site.email}.`,
       undefined,
       500,
     );
@@ -176,8 +182,7 @@ export async function POST(request: Request) {
     return NextResponse.json(
       {
         ok: false,
-        error:
-          "You've sent a few requests already. Please wait a few minutes, or call us directly.",
+        error: `You've sent a few requests already. Please wait a few minutes, or email us at ${site.email}.`,
       },
       { status: 429, headers: { "Retry-After": String(preflight.retryAfter) } },
     );
@@ -209,6 +214,7 @@ export async function POST(request: Request) {
   const address = text(form, "address");
   const description = text(form, "description");
   const urgency = text(form, "urgency") || DEFAULT_URGENCY;
+  const jobType = text(form, "jobType") || DEFAULT_JOB_TYPE;
 
   const fields: FieldErrors = {};
 
@@ -216,21 +222,33 @@ export async function POST(request: Request) {
   else if (name.length > NAME_MAX)
     fields.name = `Please keep this under ${NAME_MAX} characters.`;
 
+  // Either contact route is fine, but one of them is mandatory -- a lead with
+  // neither is unreachable and therefore worthless.
   const phoneDigits = phone.replace(/\D/g, "");
-  if (!phone) fields.phone = "Please enter a phone number.";
-  else if (phone.length > PHONE_MAX)
-    fields.phone = "That phone number looks too long.";
-  else if (
-    phoneDigits.length < PHONE_MIN_DIGITS ||
-    phoneDigits.length > PHONE_MAX_DIGITS
-  )
-    fields.phone = "Please enter a valid phone number.";
+  if (phone) {
+    if (phone.length > PHONE_MAX)
+      fields.phone = "That phone number looks too long.";
+    else if (
+      phoneDigits.length < PHONE_MIN_DIGITS ||
+      phoneDigits.length > PHONE_MAX_DIGITS
+    )
+      fields.phone = "Please enter a valid phone number.";
+  }
 
   if (email) {
     if (email.length > EMAIL_MAX) fields.email = "That email looks too long.";
     else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email))
       fields.email = "Please check that email address.";
   }
+
+  if (!phone && !email) {
+    const message = "Please give us a phone number or an email address.";
+    fields.phone = message;
+    fields.email = message;
+  }
+
+  if (!JOB_TYPES.some((option) => option.value === jobType))
+    fields.jobType = "Please choose which service you need.";
 
   if (!town) fields.town = "Please tell us the town or ZIP.";
   else if (town.length > TOWN_MAX)
@@ -286,8 +304,7 @@ export async function POST(request: Request) {
     return NextResponse.json(
       {
         ok: false,
-        error:
-          "You've sent a few requests already. Please wait a few minutes, or call us directly.",
+        error: `You've sent a few requests already. Please wait a few minutes, or email us at ${site.email}.`,
       },
       { status: 429, headers: { "Retry-After": String(limit.retryAfter) } },
     );
@@ -299,6 +316,7 @@ export async function POST(request: Request) {
     email,
     town,
     address,
+    jobType,
     urgency,
     description,
     photoCount: uploads.length,
@@ -361,13 +379,14 @@ export async function POST(request: Request) {
         email: lead.email,
         town: lead.town,
         address: lead.address,
+        jobType: lead.jobType,
         urgency: lead.urgency,
         description: lead.description,
         photos: lead.photoCount,
       })}`,
     );
     return bad(
-      "We couldn't send your request just now. Please try again, or call us.",
+      `We couldn't send your request just now. Please try again, or email us at ${site.email}.`,
       undefined,
       502,
     );

@@ -3,10 +3,12 @@
 import { useEffect, useRef, useState } from "react";
 
 import {
+  DEFAULT_JOB_TYPE,
   DEFAULT_URGENCY,
   DESCRIPTION_MAX,
   DESCRIPTION_MIN,
   HONEYPOT_FIELD,
+  JOB_TYPES,
   MAX_EDGE_PX,
   MAX_FILES,
   URGENCY_OPTIONS,
@@ -18,17 +20,18 @@ type Status = "idle" | "processing" | "submitting" | "success" | "error";
 type FieldErrors = Record<string, string>;
 
 const inputBase =
-  "w-full rounded-lg border bg-field px-4 py-3 text-ink shadow-sm outline-none transition placeholder:text-muted/60 focus:ring-4 disabled:cursor-not-allowed disabled:bg-surface-2";
-const inputOk =
-  "border-line-strong focus:border-accent focus:ring-accent/20";
-const inputBad = "border-red-400 focus:border-red-500 focus:ring-red-500/20";
+  "w-full rounded-lg border bg-field px-4 py-3 text-ink outline-none transition placeholder:text-muted/60 focus:ring-4 disabled:cursor-not-allowed disabled:bg-surface-2";
+const inputOk = "border-line-strong focus:border-accent focus:ring-accent/20";
+const inputBad = "border-red-500 focus:border-red-600 focus:ring-red-500/20";
 const labelClass = "mb-1.5 block text-sm font-semibold text-ink";
+const hintClass = "mt-1.5 text-sm";
 
 function fieldClass(hasError: boolean) {
   return `${inputBase} ${hasError ? inputBad : inputOk}`;
 }
 
 export default function QuoteForm() {
+  const [jobType, setJobType] = useState<string>(DEFAULT_JOB_TYPE);
   const [name, setName] = useState("");
   const [phone, setPhone] = useState("");
   const [email, setEmail] = useState("");
@@ -46,8 +49,8 @@ export default function QuoteForm() {
   const fileInputRef = useRef<HTMLInputElement>(null);
   const honeypotRef = useRef<HTMLInputElement>(null);
 
-  // Object URLs are leaked memory until revoked, so track the live set and
-  // clean up if the component ever unmounts mid-flow.
+  // Object URLs leak memory until revoked, so track the live set and clean up
+  // if the component ever unmounts mid-flow.
   const imagesRef = useRef<PreparedImage[]>([]);
   useEffect(() => {
     imagesRef.current = images;
@@ -111,9 +114,7 @@ export default function QuoteForm() {
         `Only the first ${MAX_FILES} photos were kept (${overflow} skipped).`,
       );
     }
-    if (failed.length > 0) {
-      problems.push(`Couldn't read: ${failed.join(", ")}.`);
-    }
+    if (failed.length > 0) problems.push(`Couldn't read: ${failed.join(", ")}.`);
     if (problems.length > 0) {
       setFieldErrors((prev) => ({ ...prev, photos: problems.join(" ") }));
     }
@@ -131,11 +132,22 @@ export default function QuoteForm() {
   function clientValidate(): FieldErrors {
     const errors: FieldErrors = {};
     if (!name.trim()) errors.name = "Please enter your name.";
-    if (!phone.trim()) errors.phone = "Please enter a phone number.";
-    else if (phone.replace(/\D/g, "").length < 7)
+
+    const hasPhone = Boolean(phone.trim());
+    const hasEmail = Boolean(email.trim());
+
+    if (hasPhone && phone.replace(/\D/g, "").length < 7)
       errors.phone = "Please enter a valid phone number.";
-    if (email.trim() && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email.trim()))
+    if (hasEmail && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email.trim()))
       errors.email = "Please check that email address.";
+
+    // One contact route is enough, but we need at least one.
+    if (!hasPhone && !hasEmail) {
+      const message = "Please give us a phone number or an email address.";
+      errors.phone = message;
+      errors.email = message;
+    }
+
     if (!town.trim()) errors.town = "Please tell us the town or ZIP.";
     if (description.trim().length < DESCRIPTION_MIN)
       errors.description = `Please add a little more detail (at least ${DESCRIPTION_MIN} characters).`;
@@ -163,6 +175,7 @@ export default function QuoteForm() {
     setStatus("submitting");
 
     const body = new FormData();
+    body.append("jobType", jobType);
     body.append("name", name.trim());
     body.append("phone", phone.trim());
     body.append("email", email.trim());
@@ -189,9 +202,9 @@ export default function QuoteForm() {
         return;
       }
 
-      // Delivered -- tear down previews and reset.
       images.forEach((image) => URL.revokeObjectURL(image.previewUrl));
       setImages([]);
+      setJobType(DEFAULT_JOB_TYPE);
       setName("");
       setPhone("");
       setEmail("");
@@ -214,41 +227,30 @@ export default function QuoteForm() {
     return (
       <div
         role="status"
-        className="rounded-2xl border border-emerald-200 bg-emerald-50 p-8 text-center sm:p-12"
+        className="border border-line bg-surface p-8 text-center sm:p-12"
       >
-        <div className="mx-auto flex h-14 w-14 items-center justify-center rounded-full bg-emerald-600 text-3xl text-white">
+        <div className="mx-auto flex h-14 w-14 items-center justify-center rounded-full bg-accent text-3xl text-accent-ink">
           ✓
         </div>
-        <h3 className="mt-5 text-2xl font-bold text-emerald-900">
-          Request sent
-        </h3>
-        <p className="mx-auto mt-2 max-w-md text-emerald-800">
-          Thanks — we&apos;ve got your details and photos. Expect a call or text
-          with a price, usually within a few hours during business hours.
+        <h3 className="u-display mt-6 text-3xl text-ink">Request sent</h3>
+        <p className="mx-auto mt-3 max-w-md leading-relaxed text-muted">
+          Thanks — your details and photos have gone straight through. You&apos;ll
+          get a straight price back, {site.responseTime}.
         </p>
 
         {notice && (
-          <p className="mx-auto mt-4 max-w-md rounded-lg bg-amber-100 px-4 py-3 text-sm text-amber-900">
+          <p className="mx-auto mt-5 max-w-md border border-line-strong bg-canvas px-4 py-3 text-sm text-ink">
             {notice}
           </p>
         )}
 
-        <p className="mt-6 text-sm text-emerald-800">
-          Need it sooner? Call{" "}
-          <a
-            className="inline-block py-2 font-semibold underline"
-            href={site.phoneHref}
-          >
-            {site.phone}
-          </a>
-        </p>
         <button
           type="button"
           onClick={() => {
             setNotice(null);
             setStatus("idle");
           }}
-          className="mt-4 min-h-11 rounded-lg border border-emerald-300 bg-white px-5 py-2.5 text-sm font-semibold text-emerald-800 transition hover:bg-emerald-100"
+          className="u-cta mt-8 min-h-11 rounded-lg border border-line-strong bg-canvas px-6 py-2.5 text-sm font-bold text-ink transition hover:bg-surface-2"
         >
           Send another request
         </button>
@@ -260,10 +262,13 @@ export default function QuoteForm() {
     <form
       onSubmit={handleSubmit}
       noValidate
-      className="rounded-2xl border border-line bg-surface p-6 shadow-sm sm:p-8"
+      className="border border-line bg-surface p-6 sm:p-9"
     >
       {/* Honeypot. Hidden from people and screen readers, filled in by bots. */}
-      <div aria-hidden="true" className="absolute -left-[9999px] h-0 w-0 overflow-hidden">
+      <div
+        aria-hidden="true"
+        className="absolute left-[-9999px] h-0 w-0 overflow-hidden"
+      >
         <label htmlFor={HONEYPOT_FIELD}>Company website</label>
         <input
           ref={honeypotRef}
@@ -276,62 +281,133 @@ export default function QuoteForm() {
         />
       </div>
 
-      <div className="grid gap-5 sm:grid-cols-2">
-        <div>
-          <label htmlFor="name" className={labelClass}>
-            Name <span className="text-red-600">*</span>
-          </label>
-          <input
-            id="name"
-            name="name"
-            type="text"
-            autoComplete="name"
-            value={name}
-            onChange={(event) => setName(event.target.value)}
-            disabled={busy}
-            aria-invalid={Boolean(fieldErrors.name)}
-            aria-describedby={fieldErrors.name ? "name-error" : undefined}
-            className={fieldClass(Boolean(fieldErrors.name))}
-            placeholder="Jane Smith"
-          />
-          {fieldErrors.name && (
-            <p id="name-error" className="mt-1.5 text-sm text-red-600">
-              {fieldErrors.name}
-            </p>
-          )}
+      {/* --- What do you need --- */}
+      <fieldset>
+        <legend className="u-eyebrow mb-3 text-[11px] text-accent">
+          What do you need?
+        </legend>
+        <div className="grid gap-2.5 sm:grid-cols-3">
+          {JOB_TYPES.map((option) => (
+            <label
+              key={option.value}
+              className={`flex cursor-pointer flex-col gap-0.5 rounded-lg border-2 p-3.5 transition ${
+                jobType === option.value
+                  ? "border-accent bg-accent-soft"
+                  : "border-line-strong bg-field hover:border-accent/50"
+              } ${busy ? "cursor-not-allowed opacity-60" : ""}`}
+            >
+              <span className="flex items-center gap-2">
+                <input
+                  type="radio"
+                  name="jobType"
+                  value={option.value}
+                  checked={jobType === option.value}
+                  onChange={(event) => setJobType(event.target.value)}
+                  disabled={busy}
+                  className="h-4 w-4 accent-accent"
+                />
+                <span className="text-sm font-bold text-ink">
+                  {option.label}
+                </span>
+              </span>
+              <span className="pl-6 text-xs text-muted">{option.hint}</span>
+            </label>
+          ))}
         </div>
+      </fieldset>
 
-        <div>
-          <label htmlFor="phone" className={labelClass}>
-            Phone <span className="text-red-600">*</span>
-          </label>
-          <input
-            id="phone"
-            name="phone"
-            type="tel"
-            inputMode="tel"
-            autoComplete="tel"
-            value={phone}
-            onChange={(event) => setPhone(event.target.value)}
-            disabled={busy}
-            aria-invalid={Boolean(fieldErrors.phone)}
-            aria-describedby="phone-hint"
-            className={fieldClass(Boolean(fieldErrors.phone))}
-            placeholder="(555) 123-4567"
-          />
-          <p
-            id="phone-hint"
-            className={`mt-1.5 text-sm ${fieldErrors.phone ? "text-red-600" : "text-muted"}`}
-          >
-            {fieldErrors.phone ?? "This is how we'll reach you with a price."}
+      <hr className="my-7 border-line" />
+
+      <div>
+        <label htmlFor="name" className={labelClass}>
+          Your name <span className="text-accent">*</span>
+        </label>
+        <input
+          id="name"
+          name="name"
+          type="text"
+          autoComplete="name"
+          value={name}
+          onChange={(event) => setName(event.target.value)}
+          disabled={busy}
+          aria-invalid={Boolean(fieldErrors.name)}
+          aria-describedby={fieldErrors.name ? "name-error" : undefined}
+          className={fieldClass(Boolean(fieldErrors.name))}
+          placeholder="Jane Smith"
+        />
+        {fieldErrors.name && (
+          <p id="name-error" className={`${hintClass} text-red-700`}>
+            {fieldErrors.name}
           </p>
-        </div>
+        )}
       </div>
 
-      <div className="mt-5 grid gap-5 sm:grid-cols-2">
+      {/* --- Contact: either one will do --- */}
+      <div className="mt-5">
+        <p className="mb-2 text-sm font-semibold text-ink">
+          How should we reach you?{" "}
+          <span className="font-normal text-muted">
+            — phone or email, whichever you prefer
+          </span>
+        </p>
+        <div className="grid gap-4 sm:grid-cols-2">
+          <div>
+            <label htmlFor="phone" className="sr-only">
+              Phone number
+            </label>
+            <input
+              id="phone"
+              name="phone"
+              type="tel"
+              inputMode="tel"
+              autoComplete="tel"
+              value={phone}
+              onChange={(event) => setPhone(event.target.value)}
+              disabled={busy}
+              aria-invalid={Boolean(fieldErrors.phone)}
+              aria-describedby="contact-hint"
+              className={fieldClass(Boolean(fieldErrors.phone))}
+              placeholder="Phone — (910) 555-0134"
+            />
+          </div>
+          <div>
+            <label htmlFor="email" className="sr-only">
+              Email address
+            </label>
+            <input
+              id="email"
+              name="email"
+              type="email"
+              inputMode="email"
+              autoComplete="email"
+              value={email}
+              onChange={(event) => setEmail(event.target.value)}
+              disabled={busy}
+              aria-invalid={Boolean(fieldErrors.email)}
+              aria-describedby="contact-hint"
+              className={fieldClass(Boolean(fieldErrors.email))}
+              placeholder="Email — jane@example.com"
+            />
+          </div>
+        </div>
+        <p
+          id="contact-hint"
+          className={`${hintClass} ${
+            fieldErrors.phone || fieldErrors.email
+              ? "text-red-700"
+              : "text-muted"
+          }`}
+        >
+          {fieldErrors.phone ||
+            fieldErrors.email ||
+            "One is enough. Fill in both if you don't mind either."}
+        </p>
+      </div>
+
+      <div className="mt-5 grid gap-4 sm:grid-cols-2">
         <div>
           <label htmlFor="town" className={labelClass}>
-            Town or ZIP <span className="text-red-600">*</span>
+            Town or ZIP <span className="text-accent">*</span>
           </label>
           <input
             id="town"
@@ -344,78 +420,48 @@ export default function QuoteForm() {
             aria-invalid={Boolean(fieldErrors.town)}
             aria-describedby="town-hint"
             className={fieldClass(Boolean(fieldErrors.town))}
-            placeholder="Springfield"
+            placeholder="Wilmington"
           />
           <p
             id="town-hint"
-            className={`mt-1.5 text-sm ${fieldErrors.town ? "text-red-600" : "text-muted"}`}
+            className={`${hintClass} ${fieldErrors.town ? "text-red-700" : "text-muted"}`}
           >
             {fieldErrors.town ?? "So we can check we cover your area."}
           </p>
         </div>
 
         <div>
-          <label htmlFor="email" className={labelClass}>
-            Email <span className="font-normal text-muted">(optional)</span>
+          <label htmlFor="address" className={labelClass}>
+            Street address{" "}
+            <span className="font-normal text-muted">(optional)</span>
           </label>
           <input
-            id="email"
-            name="email"
-            type="email"
-            inputMode="email"
-            autoComplete="email"
-            value={email}
-            onChange={(event) => setEmail(event.target.value)}
+            id="address"
+            name="address"
+            type="text"
+            autoComplete="street-address"
+            value={address}
+            onChange={(event) => setAddress(event.target.value)}
             disabled={busy}
-            aria-invalid={Boolean(fieldErrors.email)}
-            aria-describedby="email-hint"
-            className={fieldClass(Boolean(fieldErrors.email))}
-            placeholder="jane@example.com"
+            className={fieldClass(Boolean(fieldErrors.address))}
+            placeholder="1513 Parmele Drive"
           />
-          <p
-            id="email-hint"
-            className={`mt-1.5 text-sm ${fieldErrors.email ? "text-red-600" : "text-muted"}`}
-          >
-            {fieldErrors.email ?? "A backup in case we mis-hear your number."}
+          <p className={`${hintClass} text-muted`}>
+            Helps us judge access and distance.
           </p>
         </div>
       </div>
 
-      <div className="mt-5">
-        <label htmlFor="address" className={labelClass}>
-          Street address{" "}
-          <span className="font-normal text-muted">(optional)</span>
-        </label>
-        <input
-          id="address"
-          name="address"
-          type="text"
-          autoComplete="street-address"
-          value={address}
-          onChange={(event) => setAddress(event.target.value)}
-          disabled={busy}
-          aria-invalid={Boolean(fieldErrors.address)}
-          aria-describedby={fieldErrors.address ? "address-error" : undefined}
-          className={fieldClass(Boolean(fieldErrors.address))}
-          placeholder="123 Main St"
-        />
-        {fieldErrors.address && (
-          <p id="address-error" className="mt-1.5 text-sm text-red-600">
-            {fieldErrors.address}
-          </p>
-        )}
-      </div>
-
       <fieldset className="mt-6">
         <legend className={labelClass}>When do you need it done?</legend>
-        <div className="grid gap-2 sm:grid-cols-3">
+        <div className="grid gap-2.5 sm:grid-cols-3">
           {URGENCY_OPTIONS.map((option) => (
             <label
               key={option.value}
               className={`flex min-h-11 cursor-pointer items-center gap-2.5 rounded-lg border px-4 py-3 text-sm font-medium transition ${
                 urgency === option.value
                   ? "border-accent bg-accent-soft text-ink"
-                  : "border-line-strong bg-field text-ink hover:border-accent"
+                  : "border-line-strong bg-field text-ink hover:border-accent/50"
               } ${busy ? "cursor-not-allowed opacity-60" : ""}`}
             >
               <input
@@ -435,7 +481,7 @@ export default function QuoteForm() {
 
       <div className="mt-5">
         <label htmlFor="description" className={labelClass}>
-          What needs doing? <span className="text-red-600">*</span>
+          What needs shifting? <span className="text-accent">*</span>
         </label>
         <textarea
           id="description"
@@ -456,13 +502,13 @@ export default function QuoteForm() {
         >
           <span
             className={
-              fieldErrors.description ? "text-red-600" : "text-muted"
+              fieldErrors.description ? "text-red-700" : "text-muted"
             }
           >
             {fieldErrors.description ??
-              "Rough quantities and access details help us price it accurately."}
+              "Rough quantities and access details help us price it properly."}
           </span>
-          <span className="tabular-nums text-muted">
+          <span className="font-mono tabular-nums text-muted">
             {description.length}/{DESCRIPTION_MAX}
           </span>
         </div>
@@ -488,26 +534,25 @@ export default function QuoteForm() {
         />
         <label
           htmlFor="photos"
-          className={`flex cursor-pointer flex-col items-center justify-center rounded-xl border-2 border-dashed px-6 py-8 text-center transition ${
+          className={`flex cursor-pointer flex-col items-center justify-center rounded-lg border-2 border-dashed px-6 py-9 text-center transition ${
             busy || atCapacity
               ? "cursor-not-allowed border-line bg-surface-2 text-muted"
-              : "border-line-strong bg-surface-2 text-muted hover:border-accent hover:bg-accent-soft"
+              : "border-line-strong bg-canvas text-muted hover:border-accent hover:bg-accent-soft"
           }`}
         >
           <span className="text-2xl">📷</span>
-          <span className="mt-2 text-sm font-semibold">
+          <span className="mt-2 text-sm font-bold text-ink">
             {atCapacity
               ? `Maximum of ${MAX_FILES} photos attached`
               : "Tap to add photos"}
           </span>
-          <span className="mt-1 text-xs text-muted">
-            Resized to {MAX_EDGE_PX}px in your browser before sending — large
-            phone photos are fine.
+          <span className="mt-1 font-mono text-[11px] text-muted">
+            Shrunk to {MAX_EDGE_PX}px in your browser — big phone photos are fine
           </span>
         </label>
 
         {fieldErrors.photos && (
-          <p className="mt-2 text-sm text-red-600">{fieldErrors.photos}</p>
+          <p className="mt-2 text-sm text-red-700">{fieldErrors.photos}</p>
         )}
 
         {status === "processing" && (
@@ -540,17 +585,17 @@ export default function QuoteForm() {
                     onClick={() => removeImage(image.id)}
                     disabled={busy}
                     aria-label={`Remove photo ${index + 1}`}
-                    className="absolute -right-2 -top-2 flex h-8 w-8 items-center justify-center rounded-full bg-ink text-base font-bold text-canvas shadow-md transition hover:bg-red-600 disabled:opacity-50"
+                    className="absolute -right-2 -top-2 flex h-8 w-8 items-center justify-center rounded-full bg-ink text-base font-bold text-canvas transition hover:bg-accent disabled:opacity-50"
                   >
                     ×
                   </button>
-                  <p className="mt-1 truncate text-center text-xs text-muted">
+                  <p className="mt-1 truncate text-center font-mono text-[11px] text-muted">
                     {formatBytes(image.bytes)}
                   </p>
                 </li>
               ))}
             </ul>
-            <p className="mt-2 text-xs text-muted">
+            <p className="mt-2 font-mono text-[11px] text-muted">
               {images.length} of {MAX_FILES} attached ·{" "}
               {formatBytes(
                 images.reduce((total, image) => total + image.bytes, 0),
@@ -568,7 +613,7 @@ export default function QuoteForm() {
       {formError && (
         <p
           role="alert"
-          className="mt-6 rounded-lg border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-800"
+          className="mt-6 border-l-3 border-red-600 bg-red-50 px-4 py-3 text-sm text-red-800"
         >
           {formError}
         </p>
@@ -578,14 +623,14 @@ export default function QuoteForm() {
         type="submit"
         disabled={busy}
         aria-busy={status === "submitting"}
-        className="u-cta mt-6 flex w-full items-center justify-center gap-2 rounded-xl bg-accent px-6 py-4 text-lg font-bold text-accent-ink shadow-sm transition hover:bg-accent-strong focus:outline-none focus-visible:ring-4 focus-visible:ring-accent/40 disabled:cursor-not-allowed disabled:bg-line-strong disabled:text-muted"
+        className="u-cta mt-7 flex w-full items-center justify-center gap-2 rounded-lg bg-accent px-6 py-4 text-lg font-bold text-accent-ink transition hover:bg-accent-strong focus:outline-none focus-visible:ring-4 focus-visible:ring-accent/40 disabled:cursor-not-allowed disabled:bg-line-strong disabled:text-muted"
       >
         {status === "submitting" && <Spinner className="h-5 w-5" />}
-        {status === "submitting" ? "Sending..." : "Request my quote"}
+        {status === "submitting" ? "Sending..." : "Get my price"}
       </button>
 
-      <p className="mt-3 text-center text-xs text-muted">
-        No obligation. We use your details only to quote this job.
+      <p className="mt-3 text-center font-mono text-[11px] text-muted">
+        No obligation. Your details are only used to quote this job.
       </p>
     </form>
   );

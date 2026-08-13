@@ -1,22 +1,49 @@
 import Image from "next/image";
 
-import DesignToggle from "@/components/DesignToggle";
 import LocalBusinessSchema from "@/components/LocalBusinessSchema";
 import QuoteForm from "@/components/QuoteForm";
-import StickyCallBar from "@/components/StickyCallBar";
 import { site } from "@/lib/site";
 
-// Mockup-only. Set to "false" in the environment to hide it for production.
-const SHOW_DESIGN_TOGGLE =
-  process.env.NEXT_PUBLIC_SHOW_DESIGN_TOGGLE !== "false";
+import constructionDebris from "@/images/work/construction-debris.jpg";
+import drivewayLoad from "@/images/work/driveway-load.jpg";
+import rig from "@/images/work/rig.jpg";
+import transferStation from "@/images/work/transfer-station.jpg";
+import yardWaste from "@/images/work/yard-waste.jpg";
+
+const gallery = [
+  {
+    src: drivewayLoad,
+    alt: "Trailer loaded with patio furniture, plywood and a bagged mattress on a suburban driveway",
+    caption: "Garage clearout",
+    place: "Residential driveway",
+  },
+  {
+    src: yardWaste,
+    alt: "Trailer stacked with cut brush, branches and reclaimed lumber",
+    caption: "Yard debris & brush",
+    place: "Storm cleanup",
+  },
+  {
+    src: constructionDebris,
+    alt: "Construction offcuts, sheeting and buckets stacked in a plywood bin on a new-build lot",
+    caption: "Construction debris",
+    place: "New build site",
+  },
+  {
+    src: transferStation,
+    alt: "Dump trailer full of demolition timber and roofing at the transfer station",
+    caption: "Demolition load",
+    place: "At the transfer station",
+  },
+];
 
 export default function Home() {
   return (
     <div className="min-h-screen bg-canvas">
       <LocalBusinessSchema />
 
-      <header className="sticky top-0 z-50 border-b border-line bg-canvas/90 backdrop-blur">
-        <div className="mx-auto flex max-w-5xl items-center justify-between gap-4 px-5 py-3">
+      <header className="sticky top-0 z-50 border-b border-line bg-canvas/95 backdrop-blur">
+        <div className="mx-auto flex max-w-6xl items-center justify-between gap-4 px-5 py-3">
           <a href="#top" className="flex items-center gap-2.5">
             <Image
               src="/logo.jpg"
@@ -24,131 +51,365 @@ export default function Home() {
               width={44}
               height={44}
               priority
-              className="h-11 w-11 rounded-md object-cover"
+              className="h-11 w-11 rounded-lg object-cover"
             />
-            <span className="u-display text-base font-extrabold leading-tight tracking-tight text-ink sm:text-lg">
+            <span className="u-display text-base leading-none text-ink sm:text-lg">
               {site.shortName}
-              <span className="u-eyebrow block text-[11px] font-semibold uppercase tracking-wider text-accent">
+              <span className="u-eyebrow mt-1 block text-[10px] font-semibold text-accent">
                 Junk Removal
               </span>
             </span>
           </a>
-          <div className="flex items-center gap-3">
-            <a
-              href={site.phoneHref}
-              className="hidden min-h-11 items-center px-2 text-sm font-bold text-ink hover:text-accent sm:flex"
-            >
-              {site.phone}
-            </a>
-            <a
-              href="#quote"
-              className="u-cta flex min-h-11 items-center rounded-lg bg-accent px-4 text-sm font-bold text-accent-ink transition hover:bg-accent-strong"
-            >
-              Get a quote
-            </a>
-          </div>
+
+          <nav className="hidden items-center gap-7 md:flex" aria-label="Main">
+            {[
+              ["Services", "#services"],
+              ["Pricing", "#pricing"],
+              ["Our work", "#work"],
+              ["Questions", "#faq"],
+            ].map(([label, href]) => (
+              <a
+                key={href}
+                href={href}
+                className="flex min-h-11 items-center text-sm font-semibold text-muted transition hover:text-ink"
+              >
+                {label}
+              </a>
+            ))}
+          </nav>
+
+          <a
+            href="#quote"
+            className="u-cta flex min-h-11 items-center rounded-lg bg-accent px-4 text-sm font-bold text-accent-ink transition hover:bg-accent-strong"
+          >
+            Get a price
+          </a>
         </div>
       </header>
 
       <main id="top">
-        {/* Hero */}
-        <section className="u-hazard bg-inverse">
-          <div className="mx-auto max-w-5xl px-5 py-16 sm:py-24">
-            <p className="u-eyebrow text-sm font-bold uppercase tracking-[0.2em] text-inverse-accent">
+        {/* ---------------- Hero ---------------- */}
+        <section className="relative isolate overflow-hidden bg-inverse">
+          <Image
+            src={drivewayLoad}
+            alt=""
+            fill
+            priority
+            sizes="100vw"
+            placeholder="blur"
+            className="absolute inset-0 -z-10 h-full w-full object-cover opacity-35"
+          />
+          {/* Scrim keeps the headline legible over a busy daylight photo. */}
+          <div
+            className="absolute inset-0 -z-10 bg-gradient-to-r from-inverse via-inverse/90 to-inverse/40"
+            aria-hidden="true"
+          />
+
+          <div className="mx-auto max-w-6xl px-5 py-20 sm:py-28">
+            <p className="u-eyebrow text-xs text-inverse-accent">
               {site.slogan}
             </p>
-            <h1 className="u-display mt-4 max-w-3xl text-4xl font-extrabold leading-tight tracking-tight text-inverse-ink sm:text-5xl">
+            <h1 className="u-display mt-5 max-w-3xl text-[2.75rem] leading-[0.95] text-inverse-ink sm:text-6xl lg:text-7xl">
               {site.headline}
             </h1>
-            <p className="mt-5 max-w-2xl text-lg leading-relaxed text-inverse-muted">
-              {site.description}
+            <p className="mt-6 max-w-xl text-lg leading-relaxed text-inverse-muted">
+              {site.subhead}
             </p>
 
-            <div className="mt-8 flex flex-col gap-3 sm:flex-row">
+            <div className="mt-9 flex flex-col gap-3 sm:flex-row">
               <a
                 href="#quote"
-                className="u-cta-inverse rounded-xl bg-canvas px-7 py-4 text-center text-lg font-bold text-ink shadow-lg transition hover:bg-surface-2"
+                className="u-cta-inverse rounded-xl bg-accent px-8 py-4 text-center text-lg font-bold text-accent-ink transition hover:bg-accent-strong"
               >
                 Send photos, get a price
               </a>
               <a
-                href={site.phoneHref}
-                className="rounded-xl border border-inverse-ink/30 px-7 py-4 text-center text-lg font-bold text-inverse-ink transition hover:bg-inverse-ink/10"
+                href="#pricing"
+                className="rounded-xl border border-inverse-ink/25 px-8 py-4 text-center text-lg font-bold text-inverse-ink transition hover:bg-inverse-ink/10"
               >
-                Call {site.phone}
+                See what it costs
               </a>
             </div>
 
-            <dl className="mt-12 grid grid-cols-2 gap-6 border-t border-inverse-ink/15 pt-8 sm:grid-cols-4">
+            <dl className="mt-14 grid max-w-4xl grid-cols-2 gap-x-6 gap-y-7 border-t border-inverse-ink/15 pt-8 lg:grid-cols-4">
               {site.trustPoints.map(([term, detail]) => (
                 <div key={term}>
-                  <dt className="text-base font-bold text-inverse-ink">
+                  <dt className="u-display text-base text-inverse-ink">
                     {term}
                   </dt>
-                  <dd className="mt-1 text-sm text-inverse-dim">{detail}</dd>
+                  <dd className="mt-1.5 text-sm leading-snug text-inverse-dim">
+                    {detail}
+                  </dd>
                 </div>
               ))}
             </dl>
           </div>
         </section>
+        <div className="u-hazard" />
 
-        {/* Services */}
-        <section className="mx-auto max-w-5xl px-5 py-16 sm:py-20">
-          <h2 className="u-display text-3xl font-extrabold tracking-tight text-ink">
-            What we take on
-          </h2>
-          <p className="mt-3 max-w-2xl text-lg text-muted">
-            If it needs hauling away, cutting back, or cleaning up, it&apos;s
-            probably on this list. If it isn&apos;t, ask anyway.
-          </p>
+        {/* ---------------- Two ways to hire ---------------- */}
+        <section id="pricing" className="scroll-mt-16">
+          <div className="mx-auto max-w-6xl px-5 py-20 sm:py-24">
+            <p className="u-eyebrow text-xs text-accent">Two ways to do it</p>
+            <h2 className="u-display mt-3 text-4xl text-ink sm:text-5xl">
+              We haul it, or you load it.
+            </h2>
+            <p className="mt-4 max-w-2xl text-lg text-muted">
+              Pick whichever suits the job. One is hands-off and priced on the
+              space it fills; the other is a flat rate and a trailer on your
+              driveway for five days.
+            </p>
 
-          <div className="mt-10 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
-            {site.services.map((service) => (
-              <div
-                key={service.title}
-                className="u-card rounded-xl border border-line bg-surface p-6 transition hover:border-accent/40 hover:bg-accent-soft"
-              >
-                <h3 className="u-display text-lg font-bold text-ink">
-                  {service.title}
-                </h3>
-                <p className="mt-2 text-muted">{service.body}</p>
-              </div>
-            ))}
+            <div className="mt-12 grid gap-6 lg:grid-cols-2">
+              {site.offers.map((offer) => (
+                <div
+                  key={offer.id}
+                  className="flex flex-col border border-line bg-surface p-7 sm:p-9"
+                >
+                  <p className="u-eyebrow text-[11px] text-accent">
+                    {offer.eyebrow}
+                  </p>
+                  <h3 className="u-display mt-3 text-2xl text-ink sm:text-3xl">
+                    {offer.title}
+                  </h3>
+
+                  <div className="mt-5 border-y border-line py-5">
+                    <p className="u-display text-4xl text-accent">
+                      {offer.price}
+                    </p>
+                    <p className="mt-1.5 font-mono text-xs text-muted">
+                      {offer.priceNote}
+                    </p>
+                  </div>
+
+                  <p className="mt-5 text-muted">{offer.body}</p>
+
+                  <ul className="mt-6 flex-1 space-y-3">
+                    {offer.points.map((point) => (
+                      <li key={point} className="flex gap-3 text-sm text-ink">
+                        <span
+                          aria-hidden="true"
+                          className="mt-2 h-1.5 w-1.5 shrink-0 bg-accent"
+                        />
+                        {point}
+                      </li>
+                    ))}
+                  </ul>
+
+                  <a
+                    href="#quote"
+                    className="u-cta mt-8 block rounded-lg bg-ink px-6 py-3.5 text-center font-bold text-canvas transition hover:bg-inverse"
+                  >
+                    {offer.cta}
+                  </a>
+                </div>
+              ))}
+            </div>
+
+            <p className="mt-6 max-w-2xl font-mono text-xs leading-relaxed text-muted">
+              No charge to ask, and no obligation. Hazardous material (paint,
+              solvents, oil, asbestos, chemicals, gas cylinders) needs
+              specialist disposal and can&apos;t be taken.
+            </p>
           </div>
         </section>
 
-        {/* How it works */}
-        <section className="border-y border-line bg-surface-2">
-          <div className="mx-auto max-w-5xl px-5 py-16 sm:py-20">
-            <h2 className="u-display text-3xl font-extrabold tracking-tight text-ink">
-              How it works
+        {/* ---------------- Services ---------------- */}
+        <section
+          id="services"
+          className="scroll-mt-16 border-y border-line bg-surface-2"
+        >
+          <div className="mx-auto max-w-6xl px-5 py-20 sm:py-24">
+            <p className="u-eyebrow text-xs text-accent">What we take</p>
+            <h2 className="u-display mt-3 text-4xl text-ink sm:text-5xl">
+              If you want it gone, it&apos;s on the list.
             </h2>
-            <ol className="mt-10 grid gap-8 sm:grid-cols-3">
-              {site.steps.map((step, index) => (
-                <li key={step.title}>
-                  <div className="u-step flex h-11 w-11 items-center justify-center rounded-full bg-accent text-lg font-extrabold text-accent-ink">
-                    {index + 1}
-                  </div>
-                  <h3 className="u-display mt-4 text-lg font-bold text-ink">
-                    {step.title}
+
+            <div className="mt-12 grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
+              {site.services.map((service) => (
+                <div
+                  key={service.title}
+                  className="u-card border border-line bg-canvas p-6"
+                >
+                  <h3 className="u-display text-lg text-ink">
+                    {service.title}
                   </h3>
-                  <p className="mt-2 text-muted">{step.body}</p>
+                  <p className="mt-2.5 text-sm leading-relaxed text-muted">
+                    {service.body}
+                  </p>
+                </div>
+              ))}
+            </div>
+          </div>
+        </section>
+
+        {/* ---------------- How it works ---------------- */}
+        <section className="mx-auto max-w-6xl px-5 py-20 sm:py-24">
+          <p className="u-eyebrow text-xs text-accent">How it works</p>
+          <h2 className="u-display mt-3 text-4xl text-ink sm:text-5xl">
+            Three steps, no site visit.
+          </h2>
+
+          <ol className="mt-12 grid gap-10 sm:grid-cols-3">
+            {site.steps.map((step, index) => (
+              <li key={step.title} className="border-t-2 border-ink pt-5">
+                <span className="u-eyebrow text-xs text-accent">
+                  Step {index + 1}
+                </span>
+                <h3 className="u-display mt-3 text-xl text-ink">
+                  {step.title}
+                </h3>
+                <p className="mt-2.5 leading-relaxed text-muted">{step.body}</p>
+              </li>
+            ))}
+          </ol>
+        </section>
+
+        {/* ---------------- Recent work ---------------- */}
+        <section id="work" className="scroll-mt-16 bg-inverse">
+          <div className="mx-auto max-w-6xl px-5 py-20 sm:py-24">
+            <p className="u-eyebrow text-xs text-inverse-accent">
+              Recent loads
+            </p>
+            <h2 className="u-display mt-3 text-4xl text-inverse-ink sm:text-5xl">
+              Real jobs, real trailers.
+            </h2>
+            <p className="mt-4 max-w-2xl text-lg text-inverse-muted">
+              Not stock photography. These are actual loads from around
+              Wilmington.
+            </p>
+
+            <ul className="mt-12 grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
+              {gallery.map((shot) => (
+                <li key={shot.caption} className="group">
+                  <div className="relative aspect-4/3 overflow-hidden border border-inverse-ink/15">
+                    <Image
+                      src={shot.src}
+                      alt={shot.alt}
+                      placeholder="blur"
+                      sizes="(min-width: 1024px) 25vw, (min-width: 640px) 50vw, 100vw"
+                      className="h-full w-full object-cover transition duration-500 group-hover:scale-105"
+                    />
+                  </div>
+                  <p className="u-display mt-3 text-base text-inverse-ink">
+                    {shot.caption}
+                  </p>
+                  <p className="font-mono text-[11px] uppercase tracking-wider text-inverse-dim">
+                    {shot.place}
+                  </p>
                 </li>
               ))}
-            </ol>
+            </ul>
           </div>
         </section>
 
-        {/* Quote form */}
-        <section id="quote" className="scroll-mt-20 bg-canvas">
-          <div className="mx-auto max-w-3xl px-5 py-16 sm:py-20">
-            <div className="text-center">
-              <h2 className="u-display text-3xl font-extrabold tracking-tight text-ink sm:text-4xl">
-                Get your free quote
+        {/* ---------------- Owner-operated ---------------- */}
+        <section className="mx-auto max-w-6xl px-5 py-20 sm:py-24">
+          <div className="grid items-center gap-12 lg:grid-cols-2">
+            <div className="relative aspect-4/3 overflow-hidden border border-line">
+              <Image
+                src={rig}
+                alt="The Castle Clean pickup and dump trailer, branded on the door"
+                placeholder="blur"
+                sizes="(min-width: 1024px) 50vw, 100vw"
+                className="h-full w-full object-cover"
+              />
+            </div>
+
+            <div>
+              <p className="u-eyebrow text-xs text-accent">
+                Who turns up
+              </p>
+              <h2 className="u-display mt-3 text-4xl text-ink sm:text-5xl">
+                You get the owner. Every time.
               </h2>
-              <p className="mx-auto mt-3 max-w-xl text-lg text-muted">
-                Tell us what you&apos;ve got and add a few photos. We&apos;ll
-                come back with a straight price — usually the same day.
+              <div className="mt-6 space-y-4 text-lg leading-relaxed text-muted">
+                <p>
+                  The national outfits send whichever crew is free that day, and
+                  the person who quoted your job is never the person who does
+                  it. Here they&apos;re the same person.
+                </p>
+                <p>
+                  That means the price you were given is the price that gets
+                  honoured, nobody has to be told twice where the gate is, and
+                  there&apos;s no dispatcher between you and the answer.
+                </p>
+                <p className="border-l-3 border-accent pl-5 text-ink">
+                  It also means honesty about timing: this is one truck and one
+                  trailer. You&apos;ll be told straight when the next opening
+                  is rather than promised a slot that doesn&apos;t exist.
+                </p>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        {/* ---------------- Service area ---------------- */}
+        <section className="border-y border-line bg-surface-2">
+          <div className="mx-auto max-w-6xl px-5 py-16">
+            <p className="u-eyebrow text-xs text-accent">Where we work</p>
+            <h2 className="u-display mt-3 text-3xl text-ink">
+              Around Wilmington
+            </h2>
+            <ul className="mt-7 flex flex-wrap gap-2.5">
+              {site.seo.areasServed.map((area) => (
+                <li
+                  key={area}
+                  className="border border-line-strong bg-canvas px-3.5 py-2 font-mono text-xs uppercase tracking-wider text-muted"
+                >
+                  {area}
+                </li>
+              ))}
+            </ul>
+            <p className="mt-6 text-muted">
+              Somewhere not listed? Ask anyway — if it&apos;s a reasonable run
+              it&apos;s probably fine.
+            </p>
+          </div>
+        </section>
+
+        {/* ---------------- FAQ ---------------- */}
+        <section id="faq" className="scroll-mt-16">
+          <div className="mx-auto max-w-3xl px-5 py-20 sm:py-24">
+            <p className="u-eyebrow text-xs text-accent">Questions</p>
+            <h2 className="u-display mt-3 text-4xl text-ink sm:text-5xl">
+              The things people ask.
+            </h2>
+
+            <div className="mt-10 divide-y divide-line border-y border-line">
+              {site.faqs.map((faq) => (
+                <details key={faq.q} className="u-faq group">
+                  <summary className="flex cursor-pointer items-start justify-between gap-6 py-5 text-left">
+                    <span className="u-display text-lg text-ink">{faq.q}</span>
+                    <span
+                      aria-hidden="true"
+                      className="u-faq-sign mt-1 shrink-0 text-2xl font-light leading-none text-accent transition-transform duration-200"
+                    >
+                      +
+                    </span>
+                  </summary>
+                  <p className="pb-6 pr-10 leading-relaxed text-muted">
+                    {faq.a}
+                  </p>
+                </details>
+              ))}
+            </div>
+          </div>
+        </section>
+
+        {/* ---------------- Quote form ---------------- */}
+        <section id="quote" className="scroll-mt-16 bg-inverse">
+          <div className="mx-auto max-w-3xl px-5 py-20 sm:py-24">
+            <div className="text-center">
+              <p className="u-eyebrow text-xs text-inverse-accent">
+                No charge to ask
+              </p>
+              <h2 className="u-display mt-3 text-4xl text-inverse-ink sm:text-5xl">
+                Tell us what you&apos;ve got.
+              </h2>
+              <p className="mx-auto mt-4 max-w-xl text-lg text-inverse-muted">
+                A few photos and a sentence is enough. You&apos;ll get a
+                straight price back — {site.responseTime}.
               </p>
             </div>
 
@@ -159,57 +420,56 @@ export default function Home() {
         </section>
       </main>
 
-      <footer className="bg-inverse">
-        <div className="mx-auto max-w-5xl px-5 py-12">
-          <div className="flex flex-col justify-between gap-8 sm:flex-row">
-            <div className="flex items-start gap-3">
+      <footer className="border-t border-inverse-ink/10 bg-inverse">
+        <div className="mx-auto max-w-6xl px-5 py-14">
+          <div className="flex flex-col justify-between gap-10 sm:flex-row">
+            <div className="flex items-start gap-4">
               <Image
                 src="/logo.jpg"
                 alt=""
-                width={52}
-                height={52}
-                className="h-13 w-13 rounded-md object-cover"
+                width={56}
+                height={56}
+                className="h-14 w-14 rounded-lg object-cover"
               />
               <div>
-                <p className="u-display text-lg font-extrabold text-inverse-ink">
+                <p className="u-display text-lg text-inverse-ink">
                   {site.name}
                 </p>
-                <p className="text-sm font-semibold text-inverse-accent">
+                <p className="u-eyebrow mt-1 text-[10px] text-inverse-accent">
                   {site.slogan}
                 </p>
-                <p className="mt-2 max-w-sm text-sm text-inverse-muted">
+                <p className="mt-3 max-w-sm text-sm leading-relaxed text-inverse-muted">
                   Serving {site.serviceArea}. {site.hours}.
                 </p>
               </div>
             </div>
+
             <div className="text-sm">
-              <p>
-                <a
-                  href={site.phoneHref}
-                  className="inline-flex min-h-11 items-center font-bold text-inverse-accent hover:text-inverse-ink"
-                >
-                  {site.phone}
-                </a>
-              </p>
-              <p>
+              <p className="u-eyebrow text-[10px] text-inverse-dim">Contact</p>
+              <p className="mt-2">
                 <a
                   href={`mailto:${site.email}`}
-                  className="inline-flex min-h-11 items-center text-inverse-muted hover:text-inverse-ink"
+                  className="inline-flex min-h-11 items-center font-semibold text-inverse-accent transition hover:text-inverse-ink"
                 >
                   {site.email}
                 </a>
               </p>
+              <p className="mt-3">
+                <a
+                  href="#quote"
+                  className="u-cta inline-block rounded-lg bg-accent px-5 py-2.5 font-bold text-accent-ink transition hover:bg-accent-strong"
+                >
+                  Get a price
+                </a>
+              </p>
             </div>
           </div>
-          {/* Bottom padding clears the fixed mobile call bar. */}
-          <p className="mt-10 border-t border-inverse-ink/10 pb-20 pt-6 text-xs text-inverse-dim sm:pb-0">
+
+          <p className="mt-12 border-t border-inverse-ink/10 pt-6 font-mono text-[11px] text-inverse-dim">
             © {new Date().getFullYear()} {site.name}. All rights reserved.
           </p>
         </div>
       </footer>
-
-      <StickyCallBar />
-      {SHOW_DESIGN_TOGGLE && <DesignToggle />}
     </div>
   );
 }

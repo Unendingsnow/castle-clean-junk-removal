@@ -16,12 +16,13 @@ export default function LocalBusinessSchema() {
     "@context": "https://schema.org",
     "@type": "HomeAndConstructionBusiness",
     name: site.name,
-    description: site.description,
+    description: site.subhead,
     slogan: site.slogan,
     url: siteUrl,
     image: `${siteUrl}/logo.jpg`,
     logo: `${siteUrl}/logo.jpg`,
-    telephone: site.phoneHref.replace("tel:", ""),
+    // No `telephone` — enquiries route through the form so they land in
+    // Telegram with photos attached. Publishing a number would bypass that.
     email: site.email,
     priceRange: site.seo.priceRange,
     areaServed: site.seo.areasServed.map((name) => ({

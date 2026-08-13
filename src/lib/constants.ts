@@ -52,6 +52,34 @@ export type UrgencyValue = (typeof URGENCY_OPTIONS)[number]["value"];
 export const DEFAULT_URGENCY: UrgencyValue = "week";
 
 /**
+ * Which of the two services the enquiry is for. These are completely
+ * different jobs -- one is a crew-of-one day's work, the other is a drop-off
+ * and a collection five days later -- so it leads the Telegram message.
+ */
+export const JOB_TYPES = [
+  {
+    value: "full-service",
+    label: "Full service",
+    hint: "You point, we load and haul",
+    flag: "🚚 FULL SERVICE",
+  },
+  {
+    value: "trailer",
+    label: "Trailer drop-off",
+    hint: "$300 flat, you load it",
+    flag: "🛻 TRAILER RENTAL",
+  },
+  {
+    value: "unsure",
+    label: "Not sure yet",
+    hint: "Help me pick",
+    flag: "❓ UNDECIDED",
+  },
+] as const;
+
+export const DEFAULT_JOB_TYPE = "full-service";
+
+/**
  * Accepted upload types. The browser re-encodes everything to JPEG, so in
  * practice only image/jpeg arrives -- the rest are here so a submission from a
  * browser where canvas encoding failed still goes through.

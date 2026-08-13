@@ -1,93 +1,54 @@
 @import "tailwindcss";
 
 /**
- * Two complete design systems, switchable at runtime.
+ * Castle Clean design system.
  *
- *   [data-design="brand"]  (default) — sampled from the client's logo.
- *   [data-design="yard"]            — alternate direction, see below.
+ * Built from the subject's own materials rather than a services template:
+ * concrete, steel, kraft, hi-vis and painted markings. Neutrals are warm so
+ * the real job photography (dirt, timber, daylight) sits in the page instead
+ * of fighting a cool grey chrome.
  *
- * Every colour, radius and typeface below is a semantic token. Components
- * reference the token, never a literal, so a theme swap changes the entire
- * page without touching a single component. Tailwind v4 compiles `bg-surface`
- * to `background-color: var(--color-surface)`, which is what makes the
- * override blocks further down work at runtime rather than build time.
+ * The deep navy is pulled from the logo wordmark so the client's mark is at
+ * home on the dark sections. Signal orange carries every action; the logo's
+ * flag gold appears only on dark grounds, as a marker. Sparing use is what
+ * keeps both of them signals rather than decoration.
  */
 @theme {
   /* ---- surfaces ---- */
-  --color-canvas: #ffffff;
-  --color-surface: #f8fafc;
-  --color-surface-2: #f8fafc;
+  --color-canvas: #f4f1ea;
+  --color-surface: #fbf9f5;
+  --color-surface-2: #e7e2d7;
   --color-field: #ffffff;
 
   /* ---- text ---- */
-  --color-ink: #051839;
-  --color-muted: #45556c;
+  --color-ink: #16181d;
+  --color-muted: #5b5a54;
 
   /* ---- rules ---- */
-  --color-line: #e2e8f0;
-  --color-line-strong: #cad5e2;
+  --color-line: #d8d2c5;
+  --color-line-strong: #b8b1a1;
 
-  /* ---- action ---- */
-  --color-accent: #2e5b94;
-  --color-accent-strong: #1b3a6b;
-  --color-accent-ink: #ffffff;
-  --color-accent-soft: #eef4fb;
+  /* ---- action: signal orange ----
+     Darkened from #bf3d1b so 12px label text still clears WCAG AA (4.5:1)
+     against the darkest light surface, surface-2. */
+  --color-accent: #b03517;
+  --color-accent-strong: #8a2810;
+  --color-accent-ink: #fff7f2;
+  --color-accent-soft: #f7e4dc;
 
-  /* ---- dark sections ---- */
-  --color-inverse: #051839;
-  --color-inverse-ink: #ffffff;
-  --color-inverse-muted: #d7e6f6;
-  --color-inverse-dim: #85aede;
-  --color-inverse-accent: #5299cd;
+  /* ---- dark sections: logo navy, deepened ---- */
+  --color-inverse: #0d1a2b;
+  --color-inverse-2: #16283f;
+  --color-inverse-ink: #f4f1ea;
+  --color-inverse-muted: #b9c4d2;
+  --color-inverse-dim: #7e8ea1;
+  --color-inverse-accent: #f0c24b;
 
   /* ---- typography ---- */
-  --font-sans: var(--font-inter), ui-sans-serif, system-ui, sans-serif;
-  --font-mono: var(--font-inter), ui-monospace, monospace;
-
-  /* ---- geometry ---- */
-  --radius-lg: 0.5rem;
-  --radius-xl: 0.75rem;
-  --radius-2xl: 1rem;
-}
-
-/**
- * YARD
- *
- * The current design is a professional-services template that happens to be
- * navy. This one is built from the subject's own world: concrete, steel,
- * kraft, hi-vis, painted markings. Warm neutrals instead of cool ones, so the
- * page feels like a working yard rather than a bank.
- *
- * One accent (signal orange) carries every action. Hi-vis yellow appears only
- * on dark grounds, as a marker — the sparing use is what keeps it a signal
- * rather than decoration. Radii collapse to 2-4px: machined, not soft.
- */
-[data-design="yard"] {
-  --color-canvas: #ede9e1;
-  --color-surface: #f7f4ee;
-  --color-surface-2: #e4dfd4;
-  --color-field: #fffdf9;
-
-  --color-ink: #191714;
-  --color-muted: #5f594e;
-
-  --color-line: #d5cec0;
-  --color-line-strong: #b9b0a0;
-
-  --color-accent: #c0391c;
-  --color-accent-strong: #982c13;
-  --color-accent-ink: #fff8f0;
-  --color-accent-soft: #f5e2da;
-
-  --color-inverse: #201d18;
-  --color-inverse-ink: #f4f0e8;
-  --color-inverse-muted: #c9c2b4;
-  --color-inverse-dim: #948c7c;
-  --color-inverse-accent: #e8c81e;
-
   --font-sans: var(--font-archivo), ui-sans-serif, system-ui, sans-serif;
   --font-mono: var(--font-plex-mono), ui-monospace, monospace;
 
+  /* ---- geometry: machined, not soft ---- */
   --radius-lg: 0.125rem;
   --radius-xl: 0.1875rem;
   --radius-2xl: 0.25rem;
@@ -96,66 +57,59 @@
 body {
   font-family: var(--font-sans);
   background: var(--color-canvas);
+  color: var(--color-ink);
 }
-
-/* ------------------------------------------------------------------ *
- * Yard-only treatments.
- *
- * Structural flourishes done in CSS rather than JSX, so the Brand theme
- * renders byte-identical to before and there's only one DOM to maintain.
- * ------------------------------------------------------------------ */
 
 /* Labels read as stencilled equipment markings. */
-[data-design="yard"] .u-eyebrow {
+.u-eyebrow {
   font-family: var(--font-mono);
   font-weight: 500;
-  letter-spacing: 0.24em;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
 }
 
-/* Headlines tighten up and gain weight — Archivo has the width for it. */
-[data-design="yard"] .u-display {
+/* Display type is set tight and heavy — Archivo has the width to carry it. */
+.u-display {
   letter-spacing: -0.03em;
   font-weight: 800;
+  text-wrap: balance;
 }
 
-/* Service cards get a load-bearing rule instead of an even border. */
-[data-design="yard"] .u-card {
-  border-left-width: 3px;
-  border-left-color: var(--color-line-strong);
-}
-[data-design="yard"] .u-card:hover {
-  border-left-color: var(--color-accent);
-}
-
-/* Hard offset shadow, no blur — printed, stamped, physical. */
-[data-design="yard"] .u-cta {
+/* Hard offset shadow, no blur: printed, stamped, physical. */
+.u-cta {
   box-shadow: 3px 3px 0 0 var(--color-ink);
   transition:
     box-shadow 120ms ease,
     transform 120ms ease;
 }
-[data-design="yard"] .u-cta:hover {
+.u-cta:hover {
   box-shadow: 1px 1px 0 0 var(--color-ink);
   transform: translate(2px, 2px);
 }
-[data-design="yard"] .u-cta-inverse {
+.u-cta-inverse {
   box-shadow: 3px 3px 0 0 var(--color-inverse-accent);
+  transition:
+    box-shadow 120ms ease,
+    transform 120ms ease;
 }
-[data-design="yard"] .u-cta-inverse:hover {
+.u-cta-inverse:hover {
   box-shadow: 1px 1px 0 0 var(--color-inverse-accent);
   transform: translate(2px, 2px);
 }
 
-/* Step numbers go square — a machined plate, not a bubble. */
-[data-design="yard"] .u-step {
-  border-radius: 0.125rem;
+/* Cards get a load-bearing rule rather than an even border. */
+.u-card {
+  border-left-width: 3px;
+  border-left-color: var(--color-line-strong);
+  transition: border-color 120ms ease;
+}
+.u-card:hover {
+  border-left-color: var(--color-accent);
 }
 
-/* Hazard stripe under the hero, straight off a tailgate. */
-[data-design="yard"] .u-hazard::after {
-  content: "";
-  display: block;
-  height: 8px;
+/* Hazard stripe, straight off a tailgate. */
+.u-hazard {
+  height: 10px;
   background: repeating-linear-gradient(
     -45deg,
     var(--color-inverse-accent) 0 14px,
@@ -163,13 +117,26 @@ body {
   );
 }
 
+/* FAQ disclosure marker. */
+.u-faq summary::-webkit-details-marker {
+  display: none;
+}
+.u-faq summary {
+  list-style: none;
+}
+.u-faq[open] .u-faq-sign {
+  transform: rotate(45deg);
+}
+
 @media (prefers-reduced-motion: reduce) {
-  [data-design="yard"] .u-cta,
-  [data-design="yard"] .u-cta-inverse {
+  .u-cta,
+  .u-cta-inverse,
+  .u-card,
+  .u-faq-sign {
     transition: none;
   }
-  [data-design="yard"] .u-cta:hover,
-  [data-design="yard"] .u-cta-inverse:hover {
+  .u-cta:hover,
+  .u-cta-inverse:hover {
     transform: none;
   }
 }

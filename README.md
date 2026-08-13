@@ -194,14 +194,17 @@ only duplicate it.
 
 | Field | Required | Notes |
 | --- | --- | --- |
+| Service | yes | Full service / trailer drop-off / not sure — leads the message |
 | Name | yes | |
-| Phone | yes | 7–20 digits; normalised to E.164 when North American |
+| Phone **or** email | yes | At least one. Neither is individually mandatory |
 | Town or ZIP | yes | So out-of-area jobs are visible before calling back |
-| Email | no | Backup route if the number is mistyped |
 | Street address | no | Becomes an "Open in Maps" button when present |
 | Timeframe | yes | ASAP / this week / flexible — shown at the top of the message |
 | Description | yes | 10–2000 characters |
 | Photos | no | Max 8, 10MB each, images only |
+
+Phone is normalised to E.164 when it's unambiguously North American, and sits
+alone on its own line so Telegram renders it as tap-to-call.
 
 ### No ticket numbers
 
@@ -285,65 +288,69 @@ spam it. The API route exists specifically so that can't happen.
 Name, slogan, copy, services and SEO details live in
 [`src/lib/site.ts`](src/lib/site.ts).
 
-**Still to fill in** — marked `TODO`:
+**Still to confirm** — marked `TODO`:
 
-- `site.phone` **and** `site.phoneHref` (both — the `tel:` link is separate)
-- `site.email`
-- `site.seo.areasServed` — real coverage towns; wrong ones hurt local ranking
+- `site.email` — David supplied `castleclean843@gmal.com`, which is missing the
+  "i". `gmal.com` is a registered domain, so publishing it as written would
+  send customer email to a stranger. Corrected to `gmail.com`; **confirm this.**
+- `site.seo.areasServed` — currently the towns immediately around Wilmington.
+  Wrong ones actively hurt local ranking.
 - `site.seo.postalAddress` — left `null` deliberately, since a made-up address
-  is worse than none
+  is worse than none.
 
-### Two design directions
+### No public phone number
 
-The mockup ships with a runtime switcher (bottom-right) so the client can
-compare two directions on the real page rather than in a mock:
+Deliberate. Every enquiry routes through the form so it lands in Telegram with
+photos attached and a callback can be made properly. The customer supplies a
+phone number *or* an email — at least one, either is accepted — and the number
+is what renders as tap-to-call on David's side.
 
-| | **Brand** | **Yard** |
+Because there's no number to fall back to, every error state points at the
+email address instead. If you ever add a public number, those strings in
+`route.ts` need revisiting.
+
+### Design system
+
+One design, no themes. Built from the subject's own materials — concrete,
+steel, kraft, hi-vis, painted markings — rather than a professional-services
+template. Warm neutrals so the real job photography sits in the page instead of
+fighting a cool grey chrome; the deep navy is pulled from the logo so the
+client's mark is at home on the dark sections.
+
+| Token | Hex | Role |
 | --- | --- | --- |
-| Ground | White / cool slate | Warm concrete `#ede9e1` |
-| Dark sections | Logo navy `#051839` | Warm charcoal `#201d18` |
-| Action | Logo blue `#2e5b94` | Signal orange `#c0391c` |
-| Marker | — | Hi-vis yellow `#e8c81e` |
-| Type | Inter | Archivo + IBM Plex Mono labels |
-| Radius | 8–16px | 2–4px |
+| `canvas` | `#f4f1ea` | Warm concrete — page ground |
+| `surface` / `surface-2` | `#fbf9f5` / `#e7e2d7` | Panels and alternating bands |
+| `ink` | `#16181d` | Body text |
+| `accent` | `#b03517` | Signal orange — every action |
+| `inverse` | `#0d1a2b` | Logo navy, deepened — dark sections |
+| `inverse-accent` | `#f0c24b` | The logo's flag gold — marker on dark only |
 
-**Brand** is derived from the logo and is unchanged from the original build.
-**Yard** is an alternate direction built from the subject's own materials —
-concrete, steel, hi-vis, painted markings — on the argument that the first
-version, while clean, is a professional-services template that happens to be
-navy: swap the logo and it could be an accountant.
+Type is **Archivo** (display, set tight and heavy) with **IBM Plex Mono** for
+labels, so they read as stencilled equipment markings. Radii are 2–4px:
+machined, not soft. Buttons carry a hard offset shadow with no blur.
 
-Both pass WCAG AA at 390px and 1280px with zero violations.
+Reusable treatments live as `.u-*` classes in
+[`globals.css`](src/app/globals.css): `.u-display`, `.u-eyebrow`, `.u-cta`,
+`.u-card`, `.u-hazard`.
 
-**How it works.** Every colour, radius and typeface is a semantic token
-(`bg-surface`, `text-ink`, `bg-accent`) rather than a literal. Tailwind v4
-compiles those to `var(--color-*)`, so overriding the variables under
-`[data-design="yard"]` re-skins the entire page at runtime with no component
-changes and no second copy of the markup. Structural differences — the hazard
-stripe, the hard offset shadows, the card rules, mono labels — are CSS-only
-hooks (`.u-cta`, `.u-card`, `.u-eyebrow`) so there is still exactly one DOM.
+The accent was darkened from `#bf3d1b` because 12px label text failed WCAG AA
+(4.17:1) against `surface-2`. Verified: **zero axe violations and no tap target
+under 40px at 360, 390, 768 and 1440px.**
 
-**Removing it before launch:** set `NEXT_PUBLIC_SHOW_DESIGN_TOGGLE=false`, or
-delete `<DesignToggle />` from `page.tsx`. To lock in a direction permanently,
-move the winning block's values into the `@theme` block and delete the other.
+### Photography
 
-### Palette
+Real job photos from the client, in [`src/images/work/`](src/images/work), used
+via static import so Next generates blur placeholders and correct dimensions
+automatically. One was a phone screenshot — the status and nav bars were
+detected and cropped by luminance rather than hardcoded pixel offsets.
 
-The Brand palette, sampled from the logo, defined as Tailwind tokens in
-[`src/app/globals.css`](src/app/globals.css):
+**This is the single biggest upgrade over the competitors' pages**, which lean
+on stock photography. Add more as David sends them: drop the file in, add an
+entry to the `gallery` array in `page.tsx`.
 
-| Token | Hex | Taken from |
-| --- | --- | --- |
-| `brand-950` | `#051839` | Wordmark navy — hero and footer |
-| `brand-700` | `#1b3a6b` | Button hover |
-| `brand-600` | `#2e5b94` | Truck body — primary buttons |
-| `brand-500` | `#4090e0` | Castle highlight — focus rings |
-| `brand-400` | `#5299cd` | Tagline blue — accents on navy |
-| `gold-400` | `#f6ce76` | The flag — defined, deliberately unused |
-
-The logo is a white-background JPEG, so it sits in a visible box on the navy
-footer. **A transparent PNG or SVG from the client would sit better** and would
-sharpen the favicon.
+The logo is still a white-background JPEG. **A transparent PNG or SVG would sit
+better** on the navy footer and sharpen the favicon.
 
 ---
 
@@ -397,8 +404,8 @@ src/
     globals.css             Tailwind entry + brand tokens
   components/
     QuoteForm.tsx            Form, resizing, previews, submit states
-    StickyCallBar.tsx        Fixed call/quote bar for phones
     LocalBusinessSchema.tsx  Structured data for local search
+  images/work/               Real job photos (static imports, auto blur)
   lib/
     constants.ts     Limits shared by client and server
     rate-limit.ts    In-memory windows, duplicate detection
