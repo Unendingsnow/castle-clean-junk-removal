@@ -82,7 +82,7 @@ export default function Home() {
                 href="#quote"
                 className="u-cta-inverse rounded-xl bg-accent px-8 py-4 text-center text-lg font-bold text-accent-ink transition hover:bg-accent-strong"
               >
-                Send photos, get a price
+                Send photos, get a quote
               </a>
               <a
                 href="#pricing"
@@ -269,8 +269,9 @@ export default function Home() {
         <section className="mx-auto max-w-6xl px-5 py-20 sm:py-24">
           <p className="u-eyebrow text-xs text-accent">How it works</p>
           <h2 className="u-display mt-3 text-4xl text-ink sm:text-5xl">
-            Three steps, no site visit.
+            Three steps, no pressure.
           </h2>
+          <p className="mt-4 max-w-2xl text-lg text-muted">{site.quoteFlow}</p>
 
           <ol className="mt-12 grid gap-10 sm:grid-cols-3">
             {site.steps.map((step, index) => (
@@ -430,8 +431,8 @@ export default function Home() {
                 Tell us what you&apos;ve got.
               </h2>
               <p className="mx-auto mt-4 max-w-xl text-lg text-inverse-muted">
-                A few photos and a sentence is enough. You&apos;ll get a
-                straight price back — {site.responseTime}.
+                A few photos and a sentence is enough. You&apos;ll hear back{" "}
+                {site.responseTime} — with a price, or a time to come look.
               </p>
             </div>
 

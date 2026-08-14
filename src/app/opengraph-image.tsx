@@ -107,7 +107,7 @@ export default async function OpengraphImage() {
               maxWidth: 800,
             }}
           >
-            Owner-operated. Send photos, get a straight price.
+            Owner-operated. Send photos, get a straight answer.
           </div>
 
           <div style={{ display: "flex", marginTop: 44, gap: 16 }}>

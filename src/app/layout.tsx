@@ -34,20 +34,24 @@ export const metadata: Metadata = {
     // pushed every sub-page title past the ~60 Google renders before cutting.
     template: `%s | ${site.shortName}`,
   },
-  description: site.subhead,
+  description: site.metaDescription,
   applicationName: site.name,
   // Vercel serves identical content on preview and www/apex variants; without
   // a canonical those compete with each other for the same terms.
   alternates: { canonical: "/" },
   openGraph: {
     title,
-    description: site.subhead,
+    description: site.metaDescription,
     siteName: site.name,
     url: siteUrl,
     locale: "en_US",
     type: "website",
   },
-  twitter: { card: "summary_large_image", title, description: site.subhead },
+  twitter: {
+    card: "summary_large_image",
+    title,
+    description: site.metaDescription,
+  },
   robots: {
     index: true,
     follow: true,
@@ -77,9 +81,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en" className="scroll-smooth">
-      <body
-        className={`${archivo.variable} ${plexMono.variable} antialiased`}
-      >
+      <body className={`${archivo.variable} ${plexMono.variable} antialiased`}>
         {children}
         {/* Cookieless, so no consent banner needed. No-ops off Vercel. */}
         <Analytics />

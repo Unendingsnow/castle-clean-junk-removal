@@ -175,7 +175,7 @@ export default async function ServicePage({
               href="#quote"
               className="u-cta-inverse mt-8 inline-block rounded-xl bg-accent px-8 py-4 text-lg font-bold text-accent-ink transition hover:bg-accent-strong"
             >
-              Send photos, get a price
+              Send photos, get a quote
             </a>
           </div>
         </section>
@@ -272,8 +272,8 @@ export default async function ServicePage({
                 Tell us what you&apos;ve got.
               </h2>
               <p className="mx-auto mt-4 max-w-xl text-lg text-inverse-muted">
-                A few photos and a sentence is enough. You&apos;ll get a
-                straight price back — {site.responseTime}.
+                A few photos and a sentence is enough. You&apos;ll hear back{" "}
+                {site.responseTime} — with a price, or a time to come look.
               </p>
             </div>
             <div className="mt-10">

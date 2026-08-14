@@ -235,7 +235,7 @@ export default function QuoteForm() {
         <h3 className="u-display mt-6 text-3xl text-ink">Request sent</h3>
         <p className="mx-auto mt-3 max-w-md leading-relaxed text-muted">
           Thanks — your details and photos have gone straight through. You&apos;ll
-          get a straight price back, {site.responseTime}.
+          hear back {site.responseTime} — with a price, or a time to come look.
         </p>
 
         {notice && (

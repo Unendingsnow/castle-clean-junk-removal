@@ -36,13 +36,13 @@ export const SERVICE_PAGES: ServicePage[] = [
     name: "Junk removal",
     metaTitle: "Junk Removal in Wilmington, NC",
     metaDescription:
-      "Owner-operated junk removal across Wilmington and the surrounding towns. Single items to full trailer loads, priced from photos before anything moves.",
+      "Owner-operated junk removal across Wilmington and the surrounding towns. Single items to full trailer loads, priced and agreed before any work starts.",
     h1: "Junk removal in Wilmington, NC",
     lede: "One item or a full trailer, hauled away by the person who quoted it.",
     image: "driveway",
     body: [
       "Most junk removal jobs start the same way: something has been sitting in a garage, a spare room or a side yard for months, and moving it takes a truck, a trailer and a second pair of hands you don't have. That's the entire job description here.",
-      "Pricing works on volume — how much room the load takes up in the trailer — rather than by the hour or by weight. Hourly pricing rewards working slowly, and weight-based pricing means you can't be told the number until it's already on the scales. Volume means you get a real figure from photos, before anyone turns up, and that figure is what you pay.",
+      "Pricing works on volume — how much room the load takes up in the trailer — rather than by the hour or by weight. Hourly pricing rewards working slowly, and weight-based pricing means you can't be told the number until it's already on the scales. Volume means the figure is agreed before anything is touched, and it doesn't move afterwards.",
       "Because this is an owner-operated business, the person reading your photos is the person doing the lifting. Nothing gets lost between a call center, a dispatcher and whichever crew was free. If access is awkward, if there's a gate code, if the fridge has to come down a narrow stairwell — you tell one person once.",
     ],
     takes: {
@@ -57,7 +57,7 @@ export const SERVICE_PAGES: ServicePage[] = [
       ],
     },
     priceNote:
-      "Priced by the space it fills, quoted from photos. No charge to ask.",
+      "Priced by the space it fills, agreed before any work starts. No charge to ask.",
     faqs: [
       {
         q: "Do you take single items?",
@@ -125,7 +125,7 @@ export const SERVICE_PAGES: ServicePage[] = [
     body: [
       "Cleanouts are rarely just about volume. An estate clearance usually follows a bereavement, and a storage unit that's been paid for over years tends to hold things people have forgotten they own. Both need someone who will slow down when it matters rather than treat every box as landfill.",
       "The working method is straightforward: anything obviously of value or clearly personal gets set aside for you to look at rather than loaded. Anything still usable goes toward donation. The rest is disposed of properly. If you want to walk the space first and mark what stays, that works — and if you'd rather not be there at all, that works too.",
-      "These jobs are usually quoted from photos of each room or the open unit door. Storage units in particular are easy to price this way, because the door frame gives an honest sense of the depth and the stack.",
+      "Storage units are usually straightforward to price from a photo of the open door, because the frame gives an honest sense of the depth and the stack. A full house is different — for those it's normally worth walking it in person first, and a time gets booked to do that. Either way the photos come first, so nobody wastes a trip.",
     ],
     takes: {
       heading: "Typically covers",
@@ -139,7 +139,7 @@ export const SERVICE_PAGES: ServicePage[] = [
       ],
     },
     priceNote:
-      "Quoted from photos of each room or the open unit. Sorted before it's loaded.",
+      "Units priced from photos; whole houses walked in person first. Sorted before it's loaded.",
     faqs: [
       {
         q: "Can you sort donatable items separately?",

@@ -9,7 +9,7 @@ import { siteUrl } from "@/lib/site-url";
 export const metadata: Metadata = {
   title: "Junk Removal Services, Wilmington NC",
   description:
-    "Junk removal, dump trailer rental, estate cleanouts, construction debris, demolition and more around Wilmington, NC. Owner-operated, priced from photos.",
+    "Junk removal, dump trailer rental, estate cleanouts, construction debris, demolition and more around Wilmington, NC. Owner-operated, priced before any work starts.",
   alternates: { canonical: "/services" },
 };
 
@@ -56,7 +56,7 @@ export default function ServicesIndex() {
             <p className="mt-5 max-w-2xl text-lg text-inverse-muted">
               Two ways to work: we do the lifting, or we drop a trailer and you
               load it at your own pace. Either way the price is agreed before
-              anything moves.
+              any work starts.
             </p>
           </div>
         </section>

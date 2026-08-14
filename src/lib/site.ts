@@ -19,8 +19,18 @@ export const site = {
   slogan: "We clear. You keep.",
 
   headline: "Junk gone. Yard untouched.",
+
+  /** Hero paragraph. Free to be longer than a meta description needs to be. */
   subhead:
-    "Owner-operated junk removal and cleanouts around Wilmington. Send a few photos and get a straight price back — no crews, no call center, no surprise charges.",
+    "Owner-operated junk removal and cleanouts around Wilmington. Send a few photos and we'll get straight back to you — no crews, no call center, no surprise charges.",
+
+  /**
+   * Separate from `subhead` purely for length. Google truncates around 155-160
+   * characters, and the hero paragraph reads better slightly longer than that,
+   * so tying the two together forces one of them to be worse.
+   */
+  metaDescription:
+    "Owner-operated junk removal, cleanouts and dump trailer rental around Wilmington, NC. Send photos, get a straight answer — priced before any work starts.",
 
   /**
    * TODO — CONFIRM WITH DAVID. He supplied this as "castleclean843@gmal.com",
@@ -44,6 +54,21 @@ export const site = {
   responseTime: "normally within one business day",
 
   /**
+   * How quoting actually works, stated once and reused everywhere.
+   *
+   * Deliberately NOT "a firm price from photos". Photos hide volume, access
+   * and weight, and binding the price before seeing the job puts the risk on
+   * a one-person operation that can't absorb it. Equally, driving out to quote
+   * every single mattress burns an hour of the only worker's day.
+   *
+   * So: photos filter and inform, small jobs get priced on the spot, bigger
+   * ones get looked at properly, and nothing is charged until the number is
+   * agreed.
+   */
+  quoteFlow:
+    "Straightforward jobs get a price right there. Bigger or awkward ones get a time booked so it can be looked at properly. Either way, nothing gets touched until the price is agreed.",
+
+  /**
    * Direct answer to "why should I choose you?", which a tester asked outright
    * after reading the page -- meaning the trust points alone weren't landing.
    *
@@ -60,8 +85,8 @@ export const site = {
         ours: "The person who quotes your job is the person who shows up",
       },
       {
-        usual: "A rough estimate on the phone, then a bigger number on the day",
-        ours: "A real price from your photos, agreed before anything moves",
+        usual: "A number that creeps up once the truck is half loaded",
+        ours: "Agreed before anything is touched, and it doesn't move after that",
       },
       {
         usual: "Hourly rates that climb while you watch them work",
@@ -73,7 +98,7 @@ export const site = {
       },
       {
         usual: "“Call for a quote”, then a sales pitch",
-        ours: "Send photos, get a number back, walk away if it isn't for you",
+        ours: "Send photos, get a straight answer back, walk away if it isn't for you",
       },
     ],
   },
@@ -85,15 +110,15 @@ export const site = {
       eyebrow: "We do the work",
       title: "Full-service removal",
       price: "Priced by volume",
-      priceNote: "Quoted from your photos before we start",
+      priceNote: "Agreed before any work starts — never after",
       body: "You point at it, we carry it out and haul it away. Everything from a single mattress to a full estate cleanout — loaded, swept up, and gone.",
       points: [
         "We do all the lifting and loading",
         "Priced on the space it takes in the trailer, not by the hour",
-        "Quoted upfront from photos — no charge to ask",
+        "Photos first, so nobody wastes a trip — no charge to ask",
         "Swept clean before we leave",
       ],
-      cta: "Get a price from photos",
+      cta: "Send photos for a quote",
     },
     {
       id: "trailer",
@@ -146,18 +171,18 @@ export const site = {
       body: "Fill out the form with what you've got and snap a couple of pictures. Takes about a minute, and there's no charge to ask.",
     },
     {
-      title: "Get a real price, not an estimate",
-      body: "We look at the photos and come back with a firm number, normally within one business day. Not a range, not an hourly rate, and not a figure that changes once we're standing in your driveway.",
+      title: "We get back to you",
+      body: "Normally within one business day. Straightforward jobs get a price right there. Bigger or awkward ones get a time booked so it can be looked at properly first.",
     },
     {
-      title: "We clear it out",
-      body: "Pick a time that works. Everything gets loaded, the space gets swept, and what can be donated or recycled goes that way first.",
+      title: "Price agreed, then we clear it",
+      body: "Nothing gets touched until you've heard the number and said yes. Then it's loaded, the space gets swept, and whatever can be donated or recycled goes that way first.",
     },
   ],
 
   trustPoints: [
     ["Owner-operated", "Same person quotes it and hauls it"],
-    ["Priced upfront", "Agreed before anything moves"],
+    ["Priced upfront", "Agreed before any work starts"],
     ["Yard friendly", "Trailer on tires, not a dropped skid"],
     ["Cleared properly", "Donated and recycled where we can"],
   ],
@@ -165,7 +190,11 @@ export const site = {
   faqs: [
     {
       q: "How much does it cost?",
-      a: "Full-service removal is priced on how much room your load takes up in the trailer, not by weight or by the hour — so you know the number before anything moves. Send photos and you'll get a straight price back. If you'd rather load it yourself, the dump trailer is a flat $300 for five days including dump fees up to 2 tons, then $79 a ton after that.",
+      a: "Full-service removal is priced on how much room your load takes up in the trailer, not by weight or by the hour. Send photos and you'll hear back within a business day — a straightforward job gets a price there and then, a bigger one gets a time booked to look at it properly. Nothing is charged until you've agreed the number. If you'd rather load it yourself, the dump trailer is a flat $300 for five days including dump fees up to 2 tons, then $79 a ton after that.",
+    },
+    {
+      q: "Do you need to come out and look before quoting?",
+      a: "Sometimes. A couch, a mattress or a cleared-out garage can be priced straight from photos — no point either of us waiting on a visit for that. A full house, a demolition job, or anything where access looks tight is worth looking at in person, and we'll book a time. The photos decide which it is, which is why they're worth sending.",
     },
     {
       q: "Will the trailer wreck my driveway or lawn?",

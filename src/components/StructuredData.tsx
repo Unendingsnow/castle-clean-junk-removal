@@ -27,7 +27,7 @@ export default function StructuredData() {
     "@id": BUSINESS_ID,
     name: site.name,
     alternateName: site.shortName,
-    description: site.subhead,
+    description: site.metaDescription,
     slogan: site.slogan,
     url: siteUrl,
     image: `${siteUrl}/opengraph-image`,
