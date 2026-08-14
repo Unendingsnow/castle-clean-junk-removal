@@ -1,0 +1,352 @@
+================================================================================
+CASTLE CLEAN JUNK REMOVAL — BATTLE TEST REPORT
+================================================================================
+Date            14 August 2026
+Build tested    431117b (+ one fix applied during testing, see FIX-01)
+Target          Local production build (next start), real Telegram credentials
+Telegram        Live bot @CastleCleanbot -> supergroup "Castle Cleans",
+                topic 11 ("not-contacted")
+
+Tests executed  51 API/adversarial
+                 9 browser interaction
+                 4 load / concurrency
+                 3 fault-injection modes
+                 6 real end-to-end sends to live Telegram
+                --
+                73 total
+
+Result          72 passed
+                 1 real defect found and FIXED during this run (FIX-01)
+                 2 findings that are accepted risk, documented below
+                 0 secret leaks
+                 0 crashes, 0 unhandled exceptions, 0 5xx outside intent
+
+
+================================================================================
+1. HOW THIS WAS TESTED
+================================================================================
+Outbound calls to api.telegram.org were wrapped with an interceptor loaded via
+NODE_OPTIONS, so every request the app made was captured in full before it left
+the process. That made it possible to verify the ACTUAL bytes sent to Telegram
+(escaping, attach:// wiring, field ordering, topic routing) rather than
+inferring correctness from HTTP status codes.
+
+The interceptor ran in four modes:
+  passthrough  real delivery to the live group (used for the 6 end-to-end sends)
+  mockok       valid response without calling Telegram (used for the 51-test
+               adversarial run, so probe traffic didn't flood a real group)
+  fail/http500/malformed/slow   simulated upstream failures
+
+Each adversarial request carried a unique X-Forwarded-For so the per-IP rate
+limit didn't mask unrelated results. Whether that spoofing works was itself one
+of the tests (see FINDING-01).
+
+
+================================================================================
+2. DEFECT FOUND AND FIXED
+================================================================================
+
+FIX-01  DUPLICATE SUBMISSIONS ON RAPID CLICKS                    [FIXED]
+--------------------------------------------------------------------------------
+Severity        HIGH — customer-visible, revenue-affecting
+Found by        Browser test: triple-click on the submit button
+Status          Fixed and re-verified in this run
+
+WHAT HAPPENED
+  Clicking submit three times quickly fired THREE separate POST requests.
+  Measured directly by counting network calls in the page.
+
+  The guard `if (busy) return` reads React state. State does not re-render
+  within the same event-loop tick, so the second and third clicks both saw
+  busy === false and passed straight through.
+
+REAL-WORLD IMPACT
+  1. Three identical leads arrive in Telegram from one customer. David calls
+     the same person three times, or quotes a job twice.
+  2. Worse: it consumes all three of that customer's rate-limit slots. If the
+     submission then fails for any reason, their genuine retry is blocked with
+     "You've sent a few requests already" — and the business loses the job.
+
+  This was observed live during testing: the triple-click test exhausted the
+  quota, and the very next legitimate submission from that browser was
+  rejected with a 429.
+
+  Impatient double-clicking on a submit button is one of the most common
+  real-world user behaviours there is. This would have happened in week one.
+
+FIX APPLIED
+  Replaced the state-based guard with a ref, which updates synchronously:
+
+    const submittingRef = useRef(false);
+    if (busy || submittingRef.current) return;
+    ...
+    submittingRef.current = true;   // set before the first await
+    ...
+    } finally { submittingRef.current = false; }   // released on every path
+
+VERIFIED
+  Five rapid clicks -> exactly 1 network POST. Success panel renders normally.
+  Retry after a failure still works (guard released in `finally`).
+
+
+================================================================================
+3. ACCEPTED RISKS (no change made — decisions for you)
+================================================================================
+
+FINDING-01  RATE LIMIT BYPASSABLE VIA X-FORWARDED-FOR
+--------------------------------------------------------------------------------
+Severity        LOW in production / MEDIUM if ever self-hosted
+Status          Accepted — behaves correctly on Vercel
+
+  Six requests with rotating X-Forwarded-For headers: 0 blocked.
+  Six requests with a fixed header: rate limit engaged correctly after 3.
+
+  The limiter trusts X-Forwarded-For, which a client can set freely when
+  talking to the server directly.
+
+  WHY THIS IS OK ON VERCEL: the platform overwrites X-Forwarded-For at the
+  edge, so a client cannot forge it. The header is only spoofable when the app
+  is reached directly, which does not happen in the intended deployment.
+
+  WHEN IT WOULD MATTER: self-hosting behind a misconfigured proxy, or any
+  future move off Vercel. If that happens, switch to a platform-verified
+  identifier and treat the header as advisory.
+
+  Also inherent: the limiter is in-memory and per-process. On a scaled-out
+  deployment the effective limit is 3 x (number of live instances). It stops
+  casual spam, not a determined attacker. Already documented in the README.
+
+
+FINDING-02  UPLOAD MIMETYPE IS TRUSTED, CONTENT IS NOT SNIFFED
+--------------------------------------------------------------------------------
+Severity        LOW
+Status          Accepted — no practical attack path
+
+  A file containing PHP source, sent with Content-Type: image/jpeg, was
+  accepted and forwarded to Telegram.
+
+  WHY THIS IS NOT EXPLOITABLE HERE:
+    - Uploads are never written to disk on the server
+    - They are never served back to any browser
+    - They go straight to Telegram, which does its own validation and will
+      reject a non-image with "IMAGE_PROCESS_FAILED"
+    - Filenames are discarded and regenerated server-side, so a malicious
+      filename cannot influence anything
+
+  Confirmed rejected by mimetype allowlist: SVG (a real XSS vector) and
+  executables. Magic-byte sniffing would be defence in depth, not a fix for a
+  live hole.
+
+
+================================================================================
+4. FULL RESULTS
+================================================================================
+
+4.1  INJECTION AND ENCODING                                       8/8 PASS
+--------------------------------------------------------------------------------
+The important one. Telegram messages are sent with parse_mode=HTML, so an
+escaping failure would let a customer inject markup — or break the message so
+it fails to send at all.
+
+  PASS  <script>alert(1)</script><img src=x onerror=...>  in name/town/description
+  PASS  <b>BOLD</b><a href="https://evil.example">click</a></i>  (Telegram markup)
+  PASS  Unicode, emoji, CJK, Arabic RTL
+  PASS  Zero-width characters and BOM
+  PASS  Control characters and ANSI escape sequences
+  PASS  2000-character description (at the limit)
+  PASS  500-character unbroken string with no spaces
+  PASS  SQL-injection-shaped input
+  PASS  Path traversal string in the address field
+
+CAPTURED PAYLOAD — what actually reached Telegram:
+
+  <b>&lt;script&gt;alert(1)&lt;/script&gt;&lt;img src=x onerror=alert(2)&gt;</b>
+  +19105550134
+  📍 1 Test St, &lt;script&gt;alert(1)&lt;/script&gt;...
+  &lt;b&gt;BOLD&lt;/b&gt;&lt;a href="https://evil.example"&gt;click&lt;/a&gt;
+
+  Every injected tag neutralised to entities. The application's own <b> and
+  <i> formatting survives intact. Confirmed against the real payload, not
+  inferred.
+
+
+4.2  BOUNDARIES                                                 24/24 PASS
+--------------------------------------------------------------------------------
+  Description       9 -> 400   |  10 -> accepted  |  2000 -> accepted  | 2001 -> 400
+  Phone             6 -> 400   |   7 -> accepted  |    21 -> 400
+  Name            121 -> 400   Town  121 -> 400   Address  301 -> 400
+  Email           262 -> 400   |  252 -> accepted |  no @ -> 400  |  a@b -> 400
+  Contact         neither phone nor email -> 400
+  jobType/urgency invalid values -> 400
+
+  Photos            0 -> skipped (no Telegram photo call made)
+                    1 -> sendPhoto
+                    2 -> sendMediaGroup
+                    8 -> sendMediaGroup (at cap)
+                    9 -> 400
+  File size    >10MB -> 400        Zero-byte file -> 400
+
+  Verified in the captured traffic: sendMediaGroup was NEVER called with fewer
+  than 2 items. That call fails outright at Telegram, and it is the single
+  most common way this integration breaks.
+
+
+4.3  FILE TYPE HANDLING                                           4/4 PASS
+--------------------------------------------------------------------------------
+  PASS  SVG rejected (XSS vector)
+  PASS  Executable mimetype rejected
+  PASS  Path traversal in filename — neutralised, server renames every upload
+        (observed: battle-test-1.jpg, battle-test-2.jpg, ...)
+  INFO  PHP content with image mimetype accepted — see FINDING-02
+
+
+4.4  PROTOCOL ABUSE                                             10/10 PASS
+--------------------------------------------------------------------------------
+  PASS  GET / PUT / DELETE / PATCH -> 405
+  PASS  JSON body instead of multipart -> 400
+  PASS  Empty multipart body -> 400
+  PASS  Malformed multipart -> 400
+  PASS  Missing / wrong Content-Type -> 400
+  PASS  Spoofed Content-Length: 99999999999 -> 413
+        (sent over a raw TCP socket; fetch refuses to lie about body length)
+  PASS  Duplicate field names -> first value wins, no crash
+
+
+4.5  ABUSE CONTROLS                                               3/4 PASS
+--------------------------------------------------------------------------------
+  PASS  Honeypot -> HTTP 200 with photosSent=0, nothing sent to Telegram.
+        A bot is told it succeeded, so it doesn't retry.
+  PASS  Rate limit engages after 3 from one IP (200,200,200,429,429)
+  PASS  429 carries Retry-After: 600
+  INFO  X-Forwarded-For rotation bypasses it — see FINDING-01
+
+
+4.6  SECRET LEAKAGE                                               2/2 PASS
+--------------------------------------------------------------------------------
+  PASS  No bot token in any response body across all 51 requests
+  PASS  No stack traces, module paths or internal error types exposed
+  PASS  No token in captured outbound payload logs
+  PASS  Simulated upstream failures surfaced as generic text, with the real
+        Telegram error kept server-side only
+
+
+4.7  FAILURE RESILIENCE                                           3/3 PASS
+--------------------------------------------------------------------------------
+Simulated upstream conditions that cannot be produced against the live API:
+
+  Telegram 400 error     -> 502 to client, lead logged, no leak
+  Telegram HTTP 500      -> 502 to client, lead logged, no leak
+  Non-JSON 200 response  -> 502 to client, lead logged, no leak
+
+  In every case the full lead was written to the server log as a single
+  LEAD_DELIVERY_FAILED line containing name, phone, email, town, address,
+  urgency and description — recoverable from Vercel logs. Photos are not
+  recoverable this way, but the contact details are, which is enough to call
+  the customer back.
+
+  Client-facing message in all three cases:
+    "We couldn't send your request just now. Please try again, or email us
+     at castleclean843@gmail.com."
+
+
+4.8  BROWSER INTERACTION                                          9/9 PASS
+                                                        (after FIX-01 applied)
+--------------------------------------------------------------------------------
+  PASS  24MP / 6000x4000 image -> resized to 1600x1067, 2.15MB -> 266KB
+  PASS  Transparent PNG accepted, flattened and converted to JPEG
+  PASS  Corrupt image rejected with "Couldn't read:" message, no crash
+  PASS  12 files selected -> capped at 8 with "Only the first 8" notice
+  PASS  Five rapid clicks -> exactly 1 POST                    [was 3, FIX-01]
+  PASS  Offline submit -> clear error, form re-enabled, all data preserved
+  PASS  Every visible input has an associated label
+  PASS  Validation sets aria-invalid on all failing fields and announces the
+        summary via role="alert"
+  PASS  Success panel replaces the form after a real submission
+
+
+4.9  LOAD AND CONCURRENCY                                         4/4 PASS
+--------------------------------------------------------------------------------
+  10 concurrent, no photos            10/10 ok   p50 73ms   p95  91ms
+  10 concurrent, 1 photo (250KB)      10/10 ok   p50 34ms   p95  42ms
+  25 concurrent, no photos            25/25 ok   p50 43ms   p95  65ms
+  10 concurrent, 8 photos (20MB tot)  10/10 ok   p50 85ms   p95 108ms
+
+  No dropped requests, no transport errors, no degradation under 20MB of
+  simultaneous upload traffic.
+
+  Static page latency (local, warm):
+    /                              14ms   124KB html
+    /services                       6ms    34KB
+    /services/dump-trailer-rental   8ms    58KB
+    /areas-we-serve                 6ms    36KB
+
+
+4.10  LIVE END-TO-END DELIVERY                                    6/6 PASS
+--------------------------------------------------------------------------------
+Six real leads sent to the live Telegram group. All returned 200; Telegram
+accepted 10/10 underlying API calls.
+
+  1. Full service, 1 photo, phone only          200   238KB   1829ms
+  2. Trailer rental, 3 photos, email only       200   431KB   1526ms
+  3. Full service, 8 photos, both contacts      200  1449KB   3854ms
+  4. No photos, "not sure yet", flexible        200      —     494ms
+  5. Unicode + emoji + markup in every field    200   192KB   1055ms
+  6. Repeat from the number used in test 1      200      —     412ms
+
+  Verified in the captured traffic:
+    - Phone rendered alone on its own line ("+19105550134") with no wrapping
+      characters — the condition Telegram requires for tap-to-call
+    - All 32 captured calls routed to topic 11 ("not-contacted")
+    - Photos sent as a reply to the details message, so albums cannot drift
+      away from their lead
+    - Media group: every attach:// reference had a matching file part
+    - Job type and urgency flags lead the message
+    - Repeat submission carried the duplicate warning
+
+  >>> WORTH EYEBALLING: open the group and confirm messages 1-6 look right,
+      especially #5 (escaping) and #3 (8-photo album).
+
+
+================================================================================
+5. NOT COVERED
+================================================================================
+Stated plainly so the gaps are known:
+
+  - Real iOS/Android browsers. Testing used headless Chrome with device
+    emulation. Safari's HEIC handling in particular is untested; iPhones
+    normally convert to JPEG on upload, but this has not been confirmed on a
+    real device.
+  - Vercel's 4.5MB serverless request body limit. Cannot be reproduced
+    locally. Eight resized photos is roughly 2MB so normal submissions fit,
+    but a customer sending eight unusually detailed photos could exceed it and
+    see a platform error before the route runs.
+  - Sustained abuse over hours, or distributed flooding from many IPs.
+  - Telegram's own rate limits under heavy real traffic (~20 messages/minute
+    per group). At 50 leads a week this is not close to a concern.
+  - Email deliverability — there is no email sending in this system.
+
+
+================================================================================
+6. RECOMMENDATIONS
+================================================================================
+  1. DONE — duplicate submit fixed. This was the only defect found.
+
+  2. Before launch, confirm the two outstanding data items:
+       - site.email is "castleclean843@gmail.com". As supplied it read
+         "gmal.com", which is a real registered domain, so as-written it would
+         have sent customer email to a stranger.
+       - site.seo.areasServed towns are inferred from the 910 area code.
+
+  3. On the day the domain is attached, set NEXT_PUBLIC_SITE_URL and redeploy.
+     A build guard now warns if this is missed.
+
+  4. Optional hardening, only if the site attracts real abuse:
+       - Magic-byte sniffing on uploads (defence in depth, not a live hole)
+       - Redis-backed rate limiting if you ever leave Vercel
+
+  5. Retest on a real iPhone before handover. It is the one meaningful gap,
+     and phone camera uploads are the core path.
+
+================================================================================
+END OF REPORT
+================================================================================

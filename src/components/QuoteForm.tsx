@@ -49,6 +49,17 @@ export default function QuoteForm() {
   const fileInputRef = useRef<HTMLInputElement>(null);
   const honeypotRef = useRef<HTMLInputElement>(null);
 
+  /**
+   * Synchronous duplicate-submit guard.
+   *
+   * `busy` comes from state, which hasn't re-rendered yet when a second click
+   * lands in the same tick — so an impatient double or triple click sailed
+   * past it and fired one POST each. That produced duplicate leads in Telegram
+   * and burned the sender's rate-limit quota, so their genuine retry was then
+   * blocked. A ref updates synchronously and actually holds.
+   */
+  const submittingRef = useRef(false);
+
   // Object URLs leak memory until revoked, so track the live set and clean up
   // if the component ever unmounts mid-flow.
   const imagesRef = useRef<PreparedImage[]>([]);
@@ -158,7 +169,7 @@ export default function QuoteForm() {
 
   async function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault();
-    if (busy) return;
+    if (busy || submittingRef.current) return;
 
     setFormError(null);
     setNotice(null);
@@ -171,6 +182,9 @@ export default function QuoteForm() {
       return;
     }
 
+    // Set before the first await, so a click arriving later in the same tick
+    // sees it and bails.
+    submittingRef.current = true;
     setFieldErrors({});
     setStatus("submitting");
 
@@ -220,6 +234,10 @@ export default function QuoteForm() {
         "We couldn't reach the server. Check your connection and try again.",
       );
       setStatus("error");
+    } finally {
+      // Released on every path, including the early return above, so a failed
+      // attempt can still be retried.
+      submittingRef.current = false;
     }
   }
 
