@@ -116,7 +116,7 @@ export default function Home() {
               We haul it, or you load it.
             </h2>
             <p className="mt-4 max-w-2xl text-lg text-muted">
-              Pick whichever suits the job. One is hands-off and priced on the
+              Pick whichever fits the job. One is hands-off and priced on the
               space it fills; the other is a flat rate and a trailer on your
               driveway for five days.
             </p>
@@ -170,8 +170,61 @@ export default function Home() {
             <p className="mt-6 max-w-2xl font-mono text-xs leading-relaxed text-muted">
               No charge to ask, and no obligation. Hazardous material (paint,
               solvents, oil, asbestos, chemicals, gas cylinders) needs
-              specialist disposal and can&apos;t be taken.
+              specialized disposal and can&apos;t be taken.
             </p>
+          </div>
+        </section>
+
+        {/* ---------------- Why choose us ----------------
+            Placed directly after pricing because a tester read the whole page
+            and still asked "why should I choose you?" — the trust points in
+            the hero weren't answering it on their own. */}
+        <section className="border-t border-line bg-inverse">
+          <div className="mx-auto max-w-5xl px-5 py-20 sm:py-24">
+            <p className="u-eyebrow text-xs text-inverse-accent">
+              The difference
+            </p>
+            <h2 className="u-display mt-3 text-4xl text-inverse-ink sm:text-5xl">
+              {site.whyUs.heading}
+            </h2>
+            <p className="mt-4 max-w-2xl text-lg text-inverse-muted">
+              {site.whyUs.lede}
+            </p>
+
+            <ul className="mt-12 space-y-px">
+              {site.whyUs.rows.map((row) => (
+                <li
+                  key={row.ours}
+                  className="grid gap-3 bg-inverse-2 p-5 sm:grid-cols-2 sm:gap-8 sm:p-6"
+                >
+                  <div className="flex gap-3">
+                    <span
+                      aria-hidden="true"
+                      className="mt-1 shrink-0 font-mono text-sm text-inverse-muted"
+                    >
+                      ✕
+                    </span>
+                    {/* De-emphasised by the strikethrough and the mark, not by
+                        dimming the colour — inverse-dim on this panel only
+                        reaches 3.5:1 and fails WCAG AA. */}
+                    <span className="text-inverse-muted line-through decoration-inverse-muted/50">
+                      {row.usual}
+                    </span>
+                  </div>
+                  <div className="flex gap-3">
+                    <span
+                      aria-hidden="true"
+                      className="mt-1 shrink-0 font-mono text-sm text-inverse-accent"
+                    >
+                      ✓
+                    </span>
+                    <span className="font-semibold text-inverse-ink">
+                      {row.ours}
+                    </span>
+                  </div>
+                </li>
+              ))}
+            </ul>
           </div>
         </section>
 
@@ -299,8 +352,8 @@ export default function Home() {
                   it. Here they&apos;re the same person.
                 </p>
                 <p>
-                  That means the price you were given is the price that gets
-                  honoured, nobody has to be told twice where the gate is, and
+                  That means the price you were given is the price you pay,
+                  nobody has to be told twice where the gate is, and
                   there&apos;s no dispatcher between you and the answer.
                 </p>
                 <p className="border-l-3 border-accent pl-5 text-ink">

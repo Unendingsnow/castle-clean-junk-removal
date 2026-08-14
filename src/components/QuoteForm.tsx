@@ -400,7 +400,7 @@ export default function QuoteForm() {
         >
           {fieldErrors.phone ||
             fieldErrors.email ||
-            "One is enough. Fill in both if you don't mind either."}
+            "One is enough. Fill out both if you don't mind either."}
         </p>
       </div>
 
@@ -481,7 +481,7 @@ export default function QuoteForm() {
 
       <div className="mt-5">
         <label htmlFor="description" className={labelClass}>
-          What needs shifting? <span className="text-accent">*</span>
+          What needs to go? <span className="text-accent">*</span>
         </label>
         <textarea
           id="description"

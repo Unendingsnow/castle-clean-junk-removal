@@ -41,9 +41,9 @@ export const SERVICE_PAGES: ServicePage[] = [
     lede: "One item or a full trailer, hauled away by the person who quoted it.",
     image: "driveway",
     body: [
-      "Most junk removal jobs start the same way: something has been sitting in a garage, a spare room or a side yard for months, and shifting it needs a truck, a trailer and a second pair of hands you don't have. That's the entire job description here.",
+      "Most junk removal jobs start the same way: something has been sitting in a garage, a spare room or a side yard for months, and moving it takes a truck, a trailer and a second pair of hands you don't have. That's the entire job description here.",
       "Pricing works on volume — how much room the load takes up in the trailer — rather than by the hour or by weight. Hourly pricing rewards working slowly, and weight-based pricing means you can't be told the number until it's already on the scales. Volume means you get a real figure from photos, before anyone turns up, and that figure is what you pay.",
-      "Because this is an owner-operated business, the person reading your photos is the person doing the lifting. Nothing gets lost between a call centre, a dispatcher and whichever crew was free. If access is awkward, if there's a gate code, if the fridge has to come down a narrow stairwell — you tell one person once.",
+      "Because this is an owner-operated business, the person reading your photos is the person doing the lifting. Nothing gets lost between a call center, a dispatcher and whichever crew was free. If access is awkward, if there's a gate code, if the fridge has to come down a narrow stairwell — you tell one person once.",
     ],
     takes: {
       heading: "Commonly hauled",
@@ -75,14 +75,14 @@ export const SERVICE_PAGES: ServicePage[] = [
     name: "Dump trailer rental",
     metaTitle: "Dump Trailer Rental in Wilmington, NC",
     metaDescription:
-      "7x14 dump trailer delivered in Wilmington, NC. $300 flat for 5 days including 2 tons of disposal, $79 per ton after. Rolls on tyres — no damage to your driveway.",
+      "7x14 dump trailer delivered in Wilmington, NC. $300 flat for 5 days including 2 tons of disposal, $79 per ton after. Rolls on tires — no damage to your driveway.",
     h1: "Dump trailer rental in Wilmington, NC",
     lede: "$300 flat for five days. We drop it, you fill it, we haul it away.",
     image: "transfer",
     body: [
-      "If you've got the time and the muscle, this is the cheaper way to clear a property. A 7×14 dump trailer gets delivered to your place and left with you for five full days. Fill it at whatever pace suits — evenings, a weekend, across the whole week — and when you're done it gets collected and taken to the transfer station.",
-      "The flat $300 covers delivery, five days on site, collection and disposal of up to two tons. Past two tons it's $79 a ton, charged on the actual weight ticket rather than an estimate. There's no daily creep and no separate haul-away fee bolted on at the end.",
-      "The reason most people pick this over a traditional roll-off dumpster is the surface it sits on. A roll-off gets dragged off the back of a truck on steel skids, which is how driveways end up gouged and lawns end up rutted. This rolls in on tyres and rolls back out on tyres. It's the difference between a cleanup and a cleanup plus a concrete repair.",
+      "If you have the time and can do the lifting yourself, this is the cheaper way to clear a property. A 7×14 dump trailer gets delivered to your place and left with you for five full days. Fill it at whatever pace works — evenings, a weekend, across the whole week — and when you're done we pick it up and take it to the transfer station.",
+      "The flat $300 covers delivery, five days on site, pickup and disposal of up to two tons. Past two tons it's $79 a ton, charged on the actual weight ticket rather than an estimate. The price does not go up day by day, and there is no separate haul-away fee added at the end.",
+      "The reason most people pick this over a traditional roll-off dumpster is the surface it sits on. A roll-off gets dragged off the back of a truck on steel skids, which is how driveways end up gouged and lawns end up rutted. This rolls in on tires and rolls back out on tires. It's the difference between a cleanup and a cleanup plus a concrete repair.",
     ],
     takes: {
       heading: "Well suited to",
@@ -92,7 +92,7 @@ export const SERVICE_PAGES: ServicePage[] = [
         "Roofing tear-offs and siding",
         "Landscaping, brush and yard waste",
         "Moving-out clearances with a hard deadline",
-        "Anyone who'd rather load it themselves and save the labour",
+        "Anyone who'd rather load it themselves and save the labor",
       ],
     },
     priceNote:
@@ -100,7 +100,7 @@ export const SERVICE_PAGES: ServicePage[] = [
     faqs: [
       {
         q: "Will it damage my driveway or lawn?",
-        a: "No. It's a trailer on pneumatic tyres, not a steel-skidded roll-off container. That's the main reason people choose it over a conventional dumpster — no gouged concrete and no ruts across the grass.",
+        a: "No. It's a trailer on pneumatic tires, not a steel-skidded roll-off container. That's the main reason people choose it over a conventional dumpster — no gouged concrete and no ruts across the grass.",
       },
       {
         q: "What if I need it longer than five days?",
@@ -124,7 +124,7 @@ export const SERVICE_PAGES: ServicePage[] = [
     image: "driveway",
     body: [
       "Cleanouts are rarely just about volume. An estate clearance usually follows a bereavement, and a storage unit that's been paid for over years tends to hold things people have forgotten they own. Both need someone who will slow down when it matters rather than treat every box as landfill.",
-      "The working method is straightforward: anything obviously of value or clearly personal gets set aside for you to look at rather than loaded. Anything still usable goes towards donation. The rest is disposed of properly. If you want to walk the space first and mark what stays, that works — and if you'd rather not be there at all, that works too.",
+      "The working method is straightforward: anything obviously of value or clearly personal gets set aside for you to look at rather than loaded. Anything still usable goes toward donation. The rest is disposed of properly. If you want to walk the space first and mark what stays, that works — and if you'd rather not be there at all, that works too.",
       "These jobs are usually quoted from photos of each room or the open unit door. Storage units in particular are easy to price this way, because the door frame gives an honest sense of the depth and the stack.",
     ],
     takes: {
@@ -159,11 +159,11 @@ export const SERVICE_PAGES: ServicePage[] = [
     metaDescription:
       "Site cleanup and construction debris hauling around Wilmington, NC. Offcuts, sheetrock, roofing, pallets and broken concrete cleared for contractors and homeowners.",
     h1: "Construction debris removal",
-    lede: "Site clearance for contractors, remodellers and DIY jobs that got away.",
+    lede: "Site clearance for contractors, remodelers and DIY jobs that got away.",
     image: "construction",
     body: [
       "Building work generates debris faster than anyone plans for. Offcuts, packaging, broken board, torn-out fixtures and the pile that accumulates behind the dumpster because the dumpster filled up on day two. Clearing it is the difference between a site that can be worked in and one that can't.",
-      "For contractors, the useful part is scheduling around the trade rather than around a call centre. A load taken at the end of a framing stage, or a clear-down before the finish trades arrive, can be arranged directly with the person driving the truck.",
+      "For contractors, the useful part is scheduling around the trade rather than around a call center. A load taken at the end of a framing stage, or a clear-down before the finish trades arrive, can be arranged directly with the person driving the truck.",
       "For homeowners who took on a project themselves, this is often the last step nobody costed for. Either the debris gets hauled full-service, or the dump trailer gets dropped for five days and you load it as you go — that second option tends to work out cheaper on a long renovation.",
     ],
     takes: {
@@ -241,14 +241,14 @@ export const SERVICE_PAGES: ServicePage[] = [
     image: "transfer",
     body: [
       "A rotten deck, a shed that's given up, or a hot tub that hasn't been filled in four years all present the same problem: the demolition and the disposal are one job, and most people can only solve half of it. Renting a saw doesn't help if there's nowhere for the pile to go.",
-      "Hot tubs are the most common of these and the most underestimated. They're heavier than they look, usually fibreglass over a timber frame with an insulated shell, and they generally have to be cut down before they'll clear a gate. That's a saw, a plan and somewhere to put the pieces.",
+      "Hot tubs are the most common of these and the most underestimated. They're heavier than they look, usually fiberglass over a timber frame with an insulated shell, and they generally have to be cut down before they'll clear a gate. That's a saw, a plan and somewhere to put the pieces.",
       "Interior teardown works the same way — cabinets, partition walls, old bathroom fittings, built-in units. Everything comes out, gets loaded, and the room is left ready for whoever's working in it next.",
     ],
     takes: {
       heading: "Structures taken down",
       items: [
         "Hot tubs and spas, cut down and removed",
-        "Garden sheds and outbuildings",
+        "Storage sheds and outbuildings",
         "Decks, porches and steps",
         "Fencing and old playsets",
         "Interior partitions, cabinets and built-ins",

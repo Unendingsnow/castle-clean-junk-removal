@@ -10,7 +10,7 @@
  * - "You get the owner" is the actual competitive position. Junkluggers and
  *   College HUNKS sell speed and scale; neither can offer the person who
  *   quotes the job also being the person who shows up.
- * - No public phone number. Every enquiry routes through the form so it lands
+ * - No public phone number. Every inquiry routes through the form so it lands
  *   in Telegram with photos attached, and gets called back properly.
  */
 export const site = {
@@ -20,7 +20,7 @@ export const site = {
 
   headline: "Junk gone. Yard untouched.",
   subhead:
-    "Owner-operated junk removal and cleanouts around Wilmington. Send a few photos and get a straight price back — no crews, no call centre, no surprise charges.",
+    "Owner-operated junk removal and cleanouts around Wilmington. Send a few photos and get a straight price back — no crews, no call center, no surprise charges.",
 
   /**
    * TODO — CONFIRM WITH DAVID. He supplied this as "castleclean843@gmal.com",
@@ -35,11 +35,50 @@ export const site = {
 
   /**
    * Honest expectation-setting, used near the form and in the success state.
-   * Deliberately conservative -- under-promise, over-deliver.
+   *
+   * Deliberately conservative. One person cannot guarantee a same-day reply
+   * while they're on a job with a trailer, and a tester specifically asked
+   * "price or estimate, and how long?" -- so this answers both plainly rather
+   * than implying an instant response.
    */
-  responseTime: "usually the same day, and always within one business day",
+  responseTime: "normally within one business day",
 
-  /** The two ways to hire the business. */
+  /**
+   * Direct answer to "why should I choose you?", which a tester asked outright
+   * after reading the page -- meaning the trust points alone weren't landing.
+   *
+   * Framed against how the job usually goes rather than against a named
+   * competitor. "No BS, no surprises" is the tester's own phrasing; they
+   * flagged it as the thing they liked, so it leads.
+   */
+  whyUs: {
+    heading: "Why choose us?",
+    lede: "No BS, no surprises. Here's the difference in plain terms.",
+    rows: [
+      {
+        usual: "A crew you've never met, sent out by a dispatcher",
+        ours: "The person who quotes your job is the person who shows up",
+      },
+      {
+        usual: "A rough estimate on the phone, then a bigger number on the day",
+        ours: "A real price from your photos, agreed before anything moves",
+      },
+      {
+        usual: "Hourly rates that climb while you watch them work",
+        ours: "Priced on the space it fills, so a slower day costs you nothing",
+      },
+      {
+        usual: "A steel dumpster dropped on your driveway",
+        ours: "A trailer on tires that leaves the concrete and grass alone",
+      },
+      {
+        usual: "“Call for a quote”, then a sales pitch",
+        ours: "Send photos, get a number back, walk away if it isn't for you",
+      },
+    ],
+  },
+
+  /** The two ways to work with the business. */
   offers: [
     {
       id: "full-service",
@@ -62,12 +101,12 @@ export const site = {
       title: "Dump trailer drop-off",
       price: "$300 flat",
       priceNote: "5 days · up to 2 tons included · $79 per ton after",
-      body: "We drop a 7×14 dump trailer at your place, leave it with you for five days, and haul it away when you're done. Cheaper than full service if you've got the time and the muscle.",
+      body: "We drop a 7×14 dump trailer at your place, leave it with you for five days, and haul it away when you're done. Cheaper than full service if you have the time and can do the lifting yourself.",
       points: [
-        "7×14 dump trailer delivered and collected",
+        "7×14 dump trailer delivered and picked up",
         "Five full days to work at your own pace",
         "Dump fees for the first 2 tons included",
-        "Rolls on tyres — no damage to lawns or driveways",
+        "Rolls on tires — no damage to lawns or driveways",
       ],
       cta: "Book a trailer",
     },
@@ -104,22 +143,22 @@ export const site = {
   steps: [
     {
       title: "Send a few photos",
-      body: "Fill in the form with what you've got and snap a couple of pictures. Takes about a minute, and there's no charge to ask.",
+      body: "Fill out the form with what you've got and snap a couple of pictures. Takes about a minute, and there's no charge to ask.",
     },
     {
-      title: "Get a straight price",
-      body: "We look at the photos and come back with a real number — not a range, and not an hourly rate that grows while you watch.",
+      title: "Get a real price, not an estimate",
+      body: "We look at the photos and come back with a firm number, normally within one business day. Not a range, not an hourly rate, and not a figure that changes once we're standing in your driveway.",
     },
     {
       title: "We clear it out",
-      body: "Pick a time that suits. Everything gets loaded, the space gets swept, and what can be donated or recycled goes that way first.",
+      body: "Pick a time that works. Everything gets loaded, the space gets swept, and what can be donated or recycled goes that way first.",
     },
   ],
 
   trustPoints: [
     ["Owner-operated", "Same person quotes it and hauls it"],
     ["Priced upfront", "Agreed before anything moves"],
-    ["Yard friendly", "Trailer on tyres, not a dropped skid"],
+    ["Yard friendly", "Trailer on tires, not a dropped skid"],
     ["Cleared properly", "Donated and recycled where we can"],
   ],
 
@@ -130,11 +169,11 @@ export const site = {
     },
     {
       q: "Will the trailer wreck my driveway or lawn?",
-      a: "No. It's a 7×14 dump trailer on tyres, not a steel skid dropped off the back of a roll-off truck. That's the main reason people pick it over a traditional dumpster — no gouged concrete, no ruts across the grass.",
+      a: "No. It's a 7×14 dump trailer on tires, not a steel skid dropped off the back of a roll-off truck. That's the main reason people pick it over a traditional dumpster — no gouged concrete, no ruts across the grass.",
     },
     {
       q: "How soon can you come out?",
-      a: "It depends what's already booked that week. This is an owner-operated business, so you're not getting slotted in by a dispatcher — you'll be told honestly when the next opening is when you get your quote.",
+      a: "It depends on what's already booked that week. This is an owner-operated business, so you're not getting slotted in by a dispatcher — your quote comes back with the next honest opening, not a date that sounds good.",
     },
     {
       q: "Do I need to be there?",
@@ -142,7 +181,7 @@ export const site = {
     },
     {
       q: "What can't you take?",
-      a: "Hazardous material is the main one — paint, solvents, oil, asbestos, chemicals and gas cylinders all need specialist disposal. If you're not sure, put it in the photos and ask.",
+      a: "Hazardous material is the main one — paint, solvents, oil, asbestos, chemicals and gas cylinders all need specialized disposal. If you're not sure, put it in the photos and ask.",
     },
     {
       q: "What happens to it all?",

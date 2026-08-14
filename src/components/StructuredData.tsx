@@ -95,7 +95,7 @@ export default function StructuredData() {
     name: "Dump trailer rental",
     serviceType: "Dumpster / dump trailer rental",
     description:
-      "7x14 dump trailer delivered to your property for five days. You load it at your own pace, we haul it away. Rolls on tyres so it doesn't damage lawns or driveways.",
+      "7x14 dump trailer delivered to your property for five days. You load it at your own pace, we haul it away. Rolls on tires so it doesn't damage lawns or driveways.",
     provider: { "@id": BUSINESS_ID },
     areaServed: site.seo.areasServed.map((name) => ({
       "@type": "City",

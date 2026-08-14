@@ -150,7 +150,7 @@ export class TelegramClient {
   /**
    * Send the attached photos.
    *
-   * Telegram has three distinct behaviours here and getting them wrong is the
+   * Telegram has three distinct behaviors here and getting them wrong is the
    * usual source of "why did nothing arrive":
    *   - 0 photos: there is no endpoint to call, so don't call one.
    *   - 1 photo:  sendMediaGroup rejects a single-item array outright, so this

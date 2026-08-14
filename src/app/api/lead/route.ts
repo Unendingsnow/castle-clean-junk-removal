@@ -43,7 +43,7 @@ export const maxDuration = 60;
 /**
  * Timezone used to stamp leads. Without this, `toLocaleString` uses whatever
  * the server thinks local time is -- UTC on Vercel -- so David would see every
- * lead several hours out, with the date wrong on evening enquiries.
+ * lead several hours out, with the date wrong on evening inquiries.
  */
 const LEAD_TIMEZONE = process.env.LEAD_TIMEZONE || "America/New_York";
 
@@ -369,7 +369,7 @@ export async function POST(request: Request) {
         ? `${error.method} -> ${error.message}`
         : "unknown error";
     console.error(`[lead] Telegram sendMessage failed: ${detail}`);
-    // Last line of defence: without this the enquiry is gone entirely. The
+    // Last line of defense: without this the inquiry is gone entirely. The
     // photos can't be recovered from a log, but a name and a phone number can.
     console.error(
       `[lead] LEAD_DELIVERY_FAILED ${JSON.stringify({

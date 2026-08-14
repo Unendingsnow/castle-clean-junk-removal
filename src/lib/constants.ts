@@ -52,7 +52,7 @@ export type UrgencyValue = (typeof URGENCY_OPTIONS)[number]["value"];
 export const DEFAULT_URGENCY: UrgencyValue = "week";
 
 /**
- * Which of the two services the enquiry is for. These are completely
+ * Which of the two services the inquiry is for. These are completely
  * different jobs -- one is a crew-of-one day's work, the other is a drop-off
  * and a collection five days later -- so it leads the Telegram message.
  */
