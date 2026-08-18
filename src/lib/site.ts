@@ -54,10 +54,12 @@ export const site = {
     "Owner-operated junk removal, cleanouts and dump trailer rental in Leland, Wilmington and southeastern NC. Send photos, get a straight answer — 10% veteran discount.",
 
   /**
-   * TODO — CONFIRM WITH DAVID. He supplied this as "castleclean843@gmal.com",
-   * which is missing the "i". `gmal.com` is a real registered domain, so
-   * publishing it as written would quietly send customer email to a stranger.
-   * Corrected to gmail.com here on the assumption it was a typo.
+   * CONFIRMED. Originally supplied as "castleclean843@gmal.com" — missing the
+   * "i", and `gmal.com` is a real registered domain, so publishing it as
+   * written would have sent customer email to a stranger. It was corrected on
+   * the assumption of a typo, and that assumption has since been verified:
+   * this is the address registered against the business's Google Business
+   * Profile. Do not "fix" it back.
    */
   email: "castleclean843@gmail.com",
 
