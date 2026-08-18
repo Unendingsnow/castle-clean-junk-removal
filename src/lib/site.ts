@@ -10,8 +10,13 @@
  * - "You get the owner" is the actual competitive position. Junkluggers and
  *   College HUNKS sell speed and scale; neither can offer the person who
  *   quotes the job also being the person who shows up.
- * - No public phone number. Every inquiry routes through the form so it lands
- *   in Telegram with photos attached, and gets called back properly.
+ * - No phone number on the visible page. Every inquiry routes through the form
+ *   so it lands in Telegram with photos attached, and gets called back
+ *   properly. The number does appear in structured data, because a
+ *   LocalBusiness with no telephone at all is a local-ranking problem — see
+ *   `phone` below.
+ * - No postal address anywhere, including structured data. David works out of
+ *   his home, so it is never published — see `seo.postalAddress`.
  */
 export const site = {
   name: "Castle Clean Junk Removal",
@@ -33,11 +38,12 @@ export const site = {
    * what the business does and where it operates without reading further,
    * which is the same job the H1 does for a crawler.
    */
-  headlineSupport: "Junk removal and cleanouts in Wilmington, NC",
+  headlineSupport:
+    "Junk removal and cleanouts — Leland, Wilmington and southeastern NC",
 
   /** Hero paragraph. Free to be longer than a meta description needs to be. */
   subhead:
-    "Owner-operated junk removal and cleanouts around Wilmington. Send a few photos and we'll get straight back to you — no crews, no call center, no surprise charges.",
+    "Owner-operated junk removal and cleanouts across Leland, Wilmington and southeastern NC. Send a few photos and we'll get straight back to you — no crews, no call center, no surprise charges.",
 
   /**
    * Separate from `subhead` purely for length. Google truncates around 155-160
@@ -45,7 +51,7 @@ export const site = {
    * so tying the two together forces one of them to be worse.
    */
   metaDescription:
-    "Owner-operated junk removal, cleanouts and dump trailer rental around Wilmington, NC. Send photos, get a straight answer — priced before any work starts.",
+    "Owner-operated junk removal, cleanouts and dump trailer rental in Leland, Wilmington and southeastern NC. Send photos, get a straight answer — 10% veteran discount.",
 
   /**
    * TODO — CONFIRM WITH DAVID. He supplied this as "castleclean843@gmal.com",
@@ -55,7 +61,37 @@ export const site = {
    */
   email: "castleclean843@gmail.com",
 
-  serviceArea: "Wilmington and the surrounding towns",
+  /**
+   * Published in structured data only — deliberately NOT rendered anywhere on
+   * the page.
+   *
+   * David advertises this number himself ("Call today") on his own Facebook
+   * posts, so it isn't private. It's here because Google Business Profile and
+   * local ranking both depend on a consistent NAP (name / address / phone),
+   * and the site previously supplied no phone at all.
+   *
+   * It stays out of the visible page so leads keep routing through the form,
+   * which is what delivers photos into Telegram. See the note in
+   * StructuredData.tsx about the trade-off this creates.
+   */
+  phone: "910-386-3056",
+  /** E.164, which is the format schema.org and GBP both prefer. */
+  phoneE164: "+19103863056",
+
+  /**
+   * A real, already-advertised offer that was missing from the site entirely.
+   *
+   * Worth surfacing here specifically: the 910 region contains Camp Lejeune
+   * and Fort Bragg, so the veteran population is unusually high and this is a
+   * genuine differentiator rather than generic goodwill.
+   */
+  veteranDiscount: {
+    percent: 10,
+    label: "10% veteran discount",
+    note: "Mention it when you send photos and it comes off the quote.",
+  },
+
+  serviceArea: "Wilmington, Leland and southeastern North Carolina",
   hours: "Most jobs run Monday to Saturday",
 
   /**
@@ -238,27 +274,65 @@ export const site = {
    * "junk removal near me" style queries.
    */
   seo: {
-    // TODO: confirm the full coverage list with David. These are the towns
-    // immediately around Wilmington; wrong ones actively hurt local ranking.
+    /**
+     * Ordered by where the work actually happens, not by town size.
+     *
+     * Leland leads because that's where David is based and, per his
+     * own account, where he works most often. The site previously read as
+     * Wilmington-only, which undersold the Brunswick County side of the
+     * business — and Google weighs proximity between the searcher and the
+     * business heavily on local queries, so the home county is worth naming
+     * first.
+     *
+     * Everything here is inside a sensible one-truck radius of Leland. That
+     * ceiling is deliberate: a wider list would compete against haulers in
+     * Raleigh and Charlotte, lose every one of those, and dilute the signal
+     * in the towns that are actually winnable.
+     */
+    // TODO: confirm the Brunswick County additions with David — the second
+    // group is inferred from "southeastern NC", not confirmed job-by-job, and
+    // wrong towns actively hurt local ranking.
     areasServed: [
-      "Wilmington",
+      // Brunswick County — home base
       "Leland",
-      "Castle Hayne",
-      "Hampstead",
-      "Wrightsville Beach",
-      "Carolina Beach",
-      "Ogden",
-      "Porters Neck",
       "Belville",
       "Navassa",
+      "Winnabow",
+      "Bolivia",
+      "Southport",
+      "Oak Island",
+      "Shallotte",
+      // New Hanover County
+      "Wilmington",
+      "Castle Hayne",
+      "Wrightsville Beach",
+      "Carolina Beach",
+      "Kure Beach",
+      "Ogden",
+      "Porters Neck",
+      // Pender County
+      "Hampstead",
+      "Surf City",
+      "Burgaw",
     ],
 
     /**
-     * Postal address. Left null on purpose: publishing a made-up address is
-     * actively harmful for local ranking and trust, so it's simply omitted
-     * from the markup until there's a real one.
+     * Stays null permanently. This is a settled decision, not a pending TODO.
+     *
+     * David's registered address is his own home in Leland. He is a
+     * sole owner-operator working out of it, so publishing it would put his
+     * home address on the public internet.
+     *
+     * That applies to structured data exactly as much as to the footer:
+     * JSON-LD ships in the page source, so filling this in would publish the
+     * address just as effectively as printing it on the page. Do not populate
+     * it "just for schema" — that is the same disclosure with extra steps.
+     *
+     * The right home for the address is Google Business Profile, which lets a
+     * service-area business enter an address for verification and then hide
+     * it from the public listing. That gets the local-ranking benefit without
+     * the disclosure. See notes in README / handover.
      */
-    // TODO: fill in once David confirms, or leave null if he works from home.
     postalAddress: null as null | {
       street: string;
       locality: string;

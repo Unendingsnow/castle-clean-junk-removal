@@ -8,9 +8,9 @@ import { site } from "@/lib/site";
 import { siteUrl } from "@/lib/site-url";
 
 export const metadata: Metadata = {
-  title: "Areas We Serve Around Wilmington, NC",
+  title: "Areas We Serve — Leland, Wilmington & SE NC",
   description:
-    "Junk removal, cleanouts and dump trailer rental across Wilmington, Leland, Castle Hayne, Hampstead, Wrightsville Beach, Carolina Beach and the surrounding towns.",
+    "Junk removal, cleanouts and dump trailer rental across Brunswick, New Hanover and Pender counties — Leland, Belville, Southport, Wilmington, Hampstead and more.",
   alternates: { canonical: "/areas-we-serve" },
 };
 
@@ -65,9 +65,9 @@ export default function AreasWeServe() {
               Where we work
             </h1>
             <p className="mt-5 max-w-2xl text-lg text-inverse-muted">
-              Based in Wilmington and covering the towns around it. One truck,
-              one trailer, so the run has to make sense — but the list below is
-              routine, not a stretch.
+              Based in Leland, working right across Brunswick, New Hanover and
+              Pender counties. One truck, one trailer, so the run has to make
+              sense — but the list below is routine, not a stretch.
             </p>
           </div>
         </section>

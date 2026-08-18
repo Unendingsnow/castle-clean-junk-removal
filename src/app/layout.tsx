@@ -24,7 +24,11 @@ const plexMono = IBM_Plex_Mono({
  * doesn't truncate it in results. Nobody searches "Castle Clean" yet; they
  * search "junk removal wilmington nc".
  */
-const title = "Junk Removal & Cleanouts in Wilmington, NC | Castle Clean";
+// Leland leads Wilmington here on purpose. It's where the business is based,
+// and it's a far less contested term — Wilmington is where the national
+// franchises spend, Leland is winnable. Both fit inside the ~60 characters
+// Google renders before truncating.
+const title = "Junk Removal in Leland & Wilmington, NC | Castle Clean";
 
 export const metadata: Metadata = {
   metadataBase: new URL(siteUrl),

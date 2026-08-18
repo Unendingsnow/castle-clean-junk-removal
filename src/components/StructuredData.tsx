@@ -33,6 +33,22 @@ export default function StructuredData() {
     image: `${siteUrl}/opengraph-image`,
     logo: `${siteUrl}/logo.jpg`,
     email: site.email,
+    /**
+     * Present in markup but deliberately not rendered on the page.
+     *
+     * Worth being straight about the trade-off: Google's structured data
+     * guidelines ask that markup describe content visible to the reader, and
+     * this doesn't. The realistic downside is that Google discounts or
+     * ignores the field — a manual action over a real, verifiable phone
+     * number the business publishes on its own Facebook page is not a
+     * plausible outcome.
+     *
+     * It's here because a LocalBusiness with no telephone at all is a much
+     * bigger local-ranking problem, and because the number needs to match
+     * Google Business Profile exactly for NAP consistency. If Google ends up
+     * ignoring it, the fix is to surface it in the footer.
+     */
+    telephone: site.phoneE164,
     priceRange: site.seo.priceRange,
     currenciesAccepted: "USD",
     areaServed: site.seo.areasServed.map((name) => ({

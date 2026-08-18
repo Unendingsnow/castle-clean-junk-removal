@@ -175,6 +175,20 @@ export default function Home() {
               ))}
             </div>
 
+            {/* Already advertised on his own Facebook posts but missing from
+                the site entirely. Camp Lejeune and Fort Bragg are both in the
+                910 region, so this lands on a genuinely large local audience
+                rather than being generic goodwill. */}
+            <div className="mt-8 flex flex-col gap-3 border border-accent bg-accent-soft p-6 sm:flex-row sm:items-center sm:gap-5">
+              <p className="u-display shrink-0 text-2xl text-accent">
+                {site.veteranDiscount.percent}% off
+              </p>
+              <p className="text-ink">
+                <span className="font-bold">Veterans, thank you.</span>{" "}
+                {site.veteranDiscount.note}
+              </p>
+            </div>
+
             <p className="mt-6 max-w-2xl font-mono text-xs leading-relaxed text-muted">
               No charge to ask, and no obligation. Hazardous material (paint,
               solvents, oil, asbestos, chemicals, gas cylinders) needs
