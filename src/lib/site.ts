@@ -20,6 +20,21 @@ export const site = {
 
   headline: "Junk gone. Yard untouched.",
 
+  /**
+   * Second line of the H1, rendered smaller directly beneath `headline`.
+   *
+   * `headline` alone is pure brand voice — it contains neither "junk removal"
+   * nor "Wilmington", which left the single strongest on-page signal on the
+   * most important page carrying no ranking terms at all. The keywords were
+   * present only in the subhead paragraph, which counts for considerably less.
+   *
+   * This is deliberately a real, visible sentence rather than hidden text or a
+   * stuffed keyword string: someone landing cold from a search result learns
+   * what the business does and where it operates without reading further,
+   * which is the same job the H1 does for a crawler.
+   */
+  headlineSupport: "Junk removal and cleanouts in Wilmington, NC",
+
   /** Hero paragraph. Free to be longer than a meta description needs to be. */
   subhead:
     "Owner-operated junk removal and cleanouts around Wilmington. Send a few photos and we'll get straight back to you — no crews, no call center, no surprise charges.",

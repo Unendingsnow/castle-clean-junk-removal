@@ -70,8 +70,16 @@ export default function Home() {
             <p className="u-eyebrow text-xs text-inverse-accent">
               {site.slogan}
             </p>
-            <h1 className="u-display mt-5 max-w-3xl text-[2.75rem] leading-[0.95] text-inverse-ink sm:text-6xl lg:text-7xl">
-              {site.headline}
+            <h1 className="mt-5 max-w-3xl">
+              <span className="u-display block text-[2.75rem] leading-[0.95] text-inverse-ink sm:text-6xl lg:text-7xl">
+                {site.headline}
+              </span>
+              {/* Carries the ranking terms the display line deliberately
+                  doesn't. Sized down so the hero still leads with the
+                  headline rather than reading as two competing titles. */}
+              <span className="mt-4 block text-lg font-semibold text-inverse-accent sm:text-xl">
+                {site.headlineSupport}
+              </span>
             </h1>
             <p className="mt-6 max-w-xl text-lg leading-relaxed text-inverse-muted">
               {site.subhead}
