@@ -19,6 +19,25 @@ import { siteUrl } from "@/lib/site-url";
 
 const BUSINESS_ID = `${siteUrl}/#business`;
 
+/**
+ * Coverage as a radius rather than an enumerated town list.
+ *
+ * Shared by the business and the trailer service so the two can never drift
+ * apart and describe different coverage for the same operation.
+ *
+ * The centre is a public city centroid, not the operating base — see the note
+ * on `serviceAreaGeo` in site.ts before changing these numbers.
+ */
+const SERVICE_AREA = {
+  "@type": "GeoCircle",
+  geoMidpoint: {
+    "@type": "GeoCoordinates",
+    latitude: site.seo.serviceAreaGeo.latitude,
+    longitude: site.seo.serviceAreaGeo.longitude,
+  },
+  geoRadius: String(site.seo.serviceAreaGeo.radiusMeters),
+} as const;
+
 export default function StructuredData() {
   const address = site.seo.postalAddress;
 
@@ -51,16 +70,7 @@ export default function StructuredData() {
     telephone: site.phoneE164,
     priceRange: site.seo.priceRange,
     currenciesAccepted: "USD",
-    areaServed: site.seo.areasServed.map((name) => ({
-      "@type": "City",
-      name,
-      address: {
-        "@type": "PostalAddress",
-        addressLocality: name,
-        addressRegion: "NC",
-        addressCountry: "US",
-      },
-    })),
+    areaServed: SERVICE_AREA,
     openingHoursSpecification: site.seo.openingHours.map((spec) => ({
       "@type": "OpeningHoursSpecification",
       dayOfWeek: spec.days,
@@ -113,10 +123,7 @@ export default function StructuredData() {
     description:
       "7x14 dump trailer delivered to your property for five days. You load it at your own pace, we haul it away. Rolls on tires so it doesn't damage lawns or driveways.",
     provider: { "@id": BUSINESS_ID },
-    areaServed: site.seo.areasServed.map((name) => ({
-      "@type": "City",
-      name,
-    })),
+    areaServed: SERVICE_AREA,
     offers: {
       "@type": "Offer",
       price: "300",

@@ -91,10 +91,16 @@ export default async function ServicePage({
         name: service.name,
         description: service.metaDescription,
         provider: { "@id": `${siteUrl}/#business` },
-        areaServed: site.seo.areasServed.map((name) => ({
-          "@type": "City",
-          name,
-        })),
+        // Radius, not a town list — see the note on serviceAreaGeo in site.ts.
+        areaServed: {
+          "@type": "GeoCircle",
+          geoMidpoint: {
+            "@type": "GeoCoordinates",
+            latitude: site.seo.serviceAreaGeo.latitude,
+            longitude: site.seo.serviceAreaGeo.longitude,
+          },
+          geoRadius: String(site.seo.serviceAreaGeo.radiusMeters),
+        },
         url,
       },
       {

@@ -275,46 +275,36 @@ export const site = {
    */
   seo: {
     /**
-     * Ordered by where the work actually happens, not by town size.
+     * Coverage is expressed as a radius, not a list of towns.
      *
-     * Leland leads because that's where David is based and, per his
-     * own account, where he works most often. The site previously read as
-     * Wilmington-only, which undersold the Brunswick County side of the
-     * business — and Google weighs proximity between the searcher and the
-     * business heavily on local queries, so the home county is worth naming
-     * first.
+     * An enumerated town list was tried and pulled. Two problems with it:
+     * naming towns commits the business to runs it may not want, and any name
+     * that isn't genuinely serviced is worse than saying nothing — a listing
+     * that claims coverage it can't deliver is exactly what erodes local
+     * ranking and trust. Several entries were also inferred rather than
+     * confirmed job-by-job.
      *
-     * Everything here is inside a sensible one-truck radius of Leland. That
-     * ceiling is deliberate: a wider list would compete against haulers in
-     * Raleigh and Charlotte, lose every one of those, and dilute the signal
-     * in the towns that are actually winnable.
+     * A GeoCircle says the same thing honestly: here's the middle, here's how
+     * far, ask if you're near the edge. Google reads it as a service-area
+     * business, which is what this is.
      */
-    // TODO: confirm the Brunswick County additions with David — the second
-    // group is inferred from "southeastern NC", not confirmed job-by-job, and
-    // wrong towns actively hurt local ranking.
-    areasServed: [
-      // Brunswick County — home base
-      "Leland",
-      "Belville",
-      "Navassa",
-      "Winnabow",
-      "Bolivia",
-      "Southport",
-      "Oak Island",
-      "Shallotte",
-      // New Hanover County
-      "Wilmington",
-      "Castle Hayne",
-      "Wrightsville Beach",
-      "Carolina Beach",
-      "Kure Beach",
-      "Ogden",
-      "Porters Neck",
-      // Pender County
-      "Hampstead",
-      "Surf City",
-      "Burgaw",
-    ],
+    serviceAreaGeo: {
+      /**
+       * Public city-centre coordinates for Wilmington, NC.
+       *
+       * Deliberately NOT David's address. This is the published centroid of
+       * the city, so it discloses nothing — the whole point of a service-area
+       * business is that the operating base stays private. Do not "improve"
+       * the accuracy of this by moving it toward where he actually lives.
+       */
+      latitude: 34.2257,
+      longitude: -77.9447,
+      /** ~40 miles. A realistic ceiling for one truck and one trailer. */
+      radiusMeters: 64000,
+    },
+
+    /** Regional wording used in copy, in place of any town list. */
+    regionLabel: "southeastern North Carolina",
 
     /**
      * Stays null permanently. This is a settled decision, not a pending TODO.

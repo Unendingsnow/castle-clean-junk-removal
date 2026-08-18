@@ -394,21 +394,21 @@ export default function Home() {
           <div className="mx-auto max-w-6xl px-5 py-16">
             <p className="u-eyebrow text-xs text-accent">Where we work</p>
             <h2 className="u-display mt-3 text-3xl text-ink">
-              Around Wilmington
+              Across southeastern NC
             </h2>
-            <ul className="mt-7 flex flex-wrap gap-2.5">
-              {site.seo.areasServed.map((area) => (
-                <li
-                  key={area}
-                  className="border border-line-strong bg-canvas px-3.5 py-2 font-mono text-xs uppercase tracking-wider text-muted"
-                >
-                  {area}
-                </li>
-              ))}
-            </ul>
+            {/* No town list here on purpose. Naming towns commits the business
+                to runs it may not want, and any name that isn't genuinely
+                serviced is worse than saying nothing. */}
+            <p className="mt-5 max-w-2xl text-lg leading-relaxed text-muted">
+              Based near Wilmington and Leland, working right across{" "}
+              {site.seo.regionLabel}. One truck and one trailer, so the run has
+              to make sense — but that covers a lot more ground than people
+              tend to assume.
+            </p>
             <p className="mt-6 text-muted">
-              Somewhere not listed? Ask anyway — if it&apos;s a reasonable run
-              it&apos;s probably fine.
+              Not sure if you&apos;re in range? Ask anyway — include your town
+              or ZIP with your photos and you&apos;ll get a straight answer
+              either way.
             </p>
           </div>
         </section>

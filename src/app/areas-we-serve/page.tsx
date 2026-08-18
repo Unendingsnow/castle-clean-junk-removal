@@ -10,7 +10,7 @@ import { siteUrl } from "@/lib/site-url";
 export const metadata: Metadata = {
   title: "Areas We Serve — Leland, Wilmington & SE NC",
   description:
-    "Junk removal, cleanouts and dump trailer rental across Brunswick, New Hanover and Pender counties — Leland, Belville, Southport, Wilmington, Hampstead and more.",
+    "Junk removal, cleanouts and dump trailer rental across southeastern North Carolina — roughly forty miles out from the Wilmington and Leland area.",
   alternates: { canonical: "/areas-we-serve" },
 };
 
@@ -65,33 +65,31 @@ export default function AreasWeServe() {
               Where we work
             </h1>
             <p className="mt-5 max-w-2xl text-lg text-inverse-muted">
-              Based in Leland, working right across Brunswick, New Hanover and
-              Pender counties. One truck, one trailer, so the run has to make
-              sense — but the list below is routine, not a stretch.
+              Based around Wilmington and Leland, working right across{" "}
+              {site.seo.regionLabel}. One truck, one trailer, so the run has to
+              make sense — but that covers more ground than people assume.
             </p>
           </div>
         </section>
         <div className="u-hazard" />
 
         <section className="mx-auto max-w-6xl px-5 py-16">
-          <h2 className="u-display text-3xl text-ink">Towns covered</h2>
-          <ul className="mt-8 flex flex-wrap gap-3">
-            {site.seo.areasServed.map((area) => (
-              <li
-                key={area}
-                className="border border-line-strong bg-surface px-4 py-2.5 font-mono text-sm uppercase tracking-wider text-ink"
-              >
-                {area}
-              </li>
-            ))}
-          </ul>
+          <h2 className="u-display text-3xl text-ink">How far we go</h2>
 
-          <div className="mt-10 max-w-2xl space-y-4 text-lg leading-relaxed text-muted">
+          {/* Deliberately not a town list. Naming towns commits the business
+              to runs it may not want, and claiming a town that isn't really
+              serviced is worse for trust than staying regional. */}
+          <div className="mt-8 max-w-2xl space-y-4 text-lg leading-relaxed text-muted">
             <p>
-              If your town isn&apos;t on that list, it&apos;s still worth
-              asking. The limit is drive time rather than a hard boundary, and a
-              larger job further out often makes sense where a single mattress
-              wouldn&apos;t.
+              Roughly a forty-mile run out from the Wilmington and Leland area
+              — which takes in most of {site.seo.regionLabel}, the coast, and a
+              fair way inland.
+            </p>
+            <p>
+              There&apos;s no hard boundary, because drive time is the real
+              limit rather than a line on a map. A larger job further out often
+              makes sense where a single mattress wouldn&apos;t, so it&apos;s
+              always worth asking.
             </p>
             <p>
               Include your town or ZIP when you send photos and you&apos;ll get
