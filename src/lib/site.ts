@@ -51,7 +51,7 @@ export const site = {
    * so tying the two together forces one of them to be worse.
    */
   metaDescription:
-    "Owner-operated junk removal, cleanouts and dump trailer rental in Leland, Wilmington and southeastern NC. Send photos, get a straight answer — 10% veteran discount.",
+    "Owner-operated junk removal, cleanouts and dump trailer rental in Leland, Wilmington and southeastern NC. Send photos, get a straight answer — priced before any work starts.",
 
   /**
    * CONFIRMED. Originally supplied as "castleclean843@gmal.com" — missing the
@@ -79,19 +79,6 @@ export const site = {
   phone: "910-386-3056",
   /** E.164, which is the format schema.org and GBP both prefer. */
   phoneE164: "+19103863056",
-
-  /**
-   * A real, already-advertised offer that was missing from the site entirely.
-   *
-   * Worth surfacing here specifically: the 910 region contains Camp Lejeune
-   * and Fort Bragg, so the veteran population is unusually high and this is a
-   * genuine differentiator rather than generic goodwill.
-   */
-  veteranDiscount: {
-    percent: 10,
-    label: "10% veteran discount",
-    note: "Mention it when you send photos and it comes off the quote.",
-  },
 
   serviceArea: "Wilmington, Leland and southeastern North Carolina",
   hours: "Most jobs run Monday to Saturday",
