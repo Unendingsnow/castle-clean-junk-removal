@@ -1,6 +1,7 @@
 import Image from "next/image";
 import Link from "next/link";
 
+import AmericanFlag from "@/components/AmericanFlag";
 import QuoteForm from "@/components/QuoteForm";
 import SiteFooter from "@/components/SiteFooter";
 import SiteHeader from "@/components/SiteHeader";
@@ -67,6 +68,18 @@ export default function Home() {
           />
 
           <div className="mx-auto max-w-6xl px-5 py-20 sm:py-28">
+            {/* Flag over the wording, above everything else in the hero.
+                Sized at ~112px because the mark carries all fifty stars, and
+                they stop resolving much below that. The hairline border keeps
+                the cream stripes and the navy union from dissolving into the
+                hero photograph behind them. */}
+            <div className="mb-7">
+              <AmericanFlag className="h-auto w-28 border border-inverse-ink/25 sm:w-32" />
+              <p className="u-eyebrow mt-3 text-[11px] text-inverse-ink">
+                Locally owned and operated
+              </p>
+            </div>
+
             <p className="u-eyebrow text-xs text-inverse-accent">
               {site.slogan}
             </p>
