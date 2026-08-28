@@ -144,20 +144,15 @@ export default function QuoteForm() {
     const errors: FieldErrors = {};
     if (!name.trim()) errors.name = "Please enter your name.";
 
-    const hasPhone = Boolean(phone.trim());
-    const hasEmail = Boolean(email.trim());
-
-    if (hasPhone && phone.replace(/\D/g, "").length < 7)
+    // Both are required now, so the reply buttons on the Telegram
+    // notification always have something to point at.
+    if (!phone.trim()) errors.phone = "Please enter a phone number.";
+    else if (phone.replace(/\D/g, "").length < 7)
       errors.phone = "Please enter a valid phone number.";
-    if (hasEmail && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email.trim()))
-      errors.email = "Please check that email address.";
 
-    // One contact route is enough, but we need at least one.
-    if (!hasPhone && !hasEmail) {
-      const message = "Please give us a phone number or an email address.";
-      errors.phone = message;
-      errors.email = message;
-    }
+    if (!email.trim()) errors.email = "Please enter an email address.";
+    else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email.trim()))
+      errors.email = "Please check that email address.";
 
     if (!town.trim()) errors.town = "Please tell us the town or ZIP.";
     if (description.trim().length < DESCRIPTION_MIN)
@@ -360,12 +355,12 @@ export default function QuoteForm() {
         )}
       </div>
 
-      {/* --- Contact: either one will do --- */}
+      {/* --- Contact: both required, so every lead is answerable --- */}
       <div className="mt-5">
         <p className="mb-2 text-sm font-semibold text-ink">
           How should we reach you?{" "}
           <span className="font-normal text-muted">
-            — phone or email, whichever you prefer
+            — we need both
           </span>
         </p>
         <div className="grid gap-4 sm:grid-cols-2">
@@ -386,6 +381,7 @@ export default function QuoteForm() {
               aria-describedby="contact-hint"
               className={fieldClass(Boolean(fieldErrors.phone))}
               placeholder="Phone — (910) 555-0134"
+              required
             />
           </div>
           <div>
@@ -405,6 +401,7 @@ export default function QuoteForm() {
               aria-describedby="contact-hint"
               className={fieldClass(Boolean(fieldErrors.email))}
               placeholder="Email — jane@example.com"
+              required
             />
           </div>
         </div>
@@ -418,7 +415,7 @@ export default function QuoteForm() {
         >
           {fieldErrors.phone ||
             fieldErrors.email ||
-            "One is enough. Fill out both if you don't mind either."}
+            "Both are needed so we can get back to you whichever way suits."}
         </p>
       </div>
 

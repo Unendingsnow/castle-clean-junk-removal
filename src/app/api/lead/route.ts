@@ -26,7 +26,13 @@ import {
   noteSubmission,
   peekRateLimit,
 } from "@/lib/rate-limit";
+import {
+  handoffUrl,
+  isEmailAddress,
+  toDiallable,
+} from "@/lib/contact-links";
 import { site } from "@/lib/site";
+import { siteUrl } from "@/lib/site-url";
 import {
   escapeHtml,
   TelegramClient,
@@ -222,30 +228,30 @@ export async function POST(request: Request) {
   else if (name.length > NAME_MAX)
     fields.name = `Please keep this under ${NAME_MAX} characters.`;
 
-  // Either contact route is fine, but one of them is mandatory -- a lead with
-  // neither is unreachable and therefore worthless.
+  /**
+   * Both contact routes are now mandatory.
+   *
+   * This used to accept either one. It's a deliberate trade: requiring both
+   * costs some completed forms, but every lead that does arrive can be
+   * answered by text, call or email, which is what the reply buttons on the
+   * Telegram message depend on. A lead with only one of the two produces a
+   * notification with half its buttons missing.
+   */
   const phoneDigits = phone.replace(/\D/g, "");
-  if (phone) {
-    if (phone.length > PHONE_MAX)
-      fields.phone = "That phone number looks too long.";
-    else if (
-      phoneDigits.length < PHONE_MIN_DIGITS ||
-      phoneDigits.length > PHONE_MAX_DIGITS
-    )
-      fields.phone = "Please enter a valid phone number.";
-  }
+  if (!phone) fields.phone = "Please enter a phone number.";
+  else if (phone.length > PHONE_MAX)
+    fields.phone = "That phone number looks too long.";
+  else if (
+    phoneDigits.length < PHONE_MIN_DIGITS ||
+    phoneDigits.length > PHONE_MAX_DIGITS
+  )
+    fields.phone = "Please enter a valid phone number.";
 
-  if (email) {
-    if (email.length > EMAIL_MAX) fields.email = "That email looks too long.";
-    else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email))
-      fields.email = "Please check that email address.";
-  }
-
-  if (!phone && !email) {
-    const message = "Please give us a phone number or an email address.";
-    fields.phone = message;
-    fields.email = message;
-  }
+  if (!email) fields.email = "Please enter an email address.";
+  else if (email.length > EMAIL_MAX)
+    fields.email = "That email looks too long.";
+  else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email))
+    fields.email = "Please check that email address.";
 
   if (!JOB_TYPES.some((option) => option.value === jobType))
     fields.jobType = "Please choose which service you need.";
@@ -326,19 +332,55 @@ export async function POST(request: Request) {
   const telegram = new TelegramClient(token, chatId);
   const placement: Placement = TOPIC_ID ? { threadId: TOPIC_ID } : {};
 
-  // A plain link button -- no webhook needed for these, unlike callback
-  // buttons. David taps it to see how far the job is before calling back.
+  /**
+   * Reply buttons, and one for the map.
+   *
+   * All plain link buttons -- no webhook needed for these, unlike callback
+   * buttons. The reply ones point at `/r` on this site rather than at `sms:`,
+   * `tel:` or `mailto:` directly, because Telegram only accepts http(s) and
+   * tg:// in a button URL and silently rejects the rest. `/r` does the handoff
+   * into the native app with the customer's number and a drafted opener
+   * already filled in, so replying is one tap and then typing.
+   *
+   * Text leads Call: a missed call from an unknown number rarely gets picked
+   * up, and a text leaves the customer something to read.
+   */
+  const dialable = toDiallable(lead.phone);
+  const replyRow: { text: string; url: string }[] = [];
+
+  if (dialable) {
+    replyRow.push({
+      text: "💬 Text now",
+      url: handoffUrl(siteUrl, "sms", dialable, lead.name),
+    });
+    replyRow.push({
+      text: "📞 Call now",
+      url: handoffUrl(siteUrl, "call", dialable, lead.name),
+    });
+  }
+  if (isEmailAddress(lead.email)) {
+    replyRow.push({
+      text: "✉️ Email now",
+      url: handoffUrl(siteUrl, "email", lead.email.trim(), lead.name),
+    });
+  }
+
   const mapsQuery = [lead.address, lead.town].filter(Boolean).join(", ");
-  const keyboard = mapsQuery
-    ? [
-        [
-          {
-            text: "📍 Open in Maps",
-            url: `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(mapsQuery)}`,
-          },
-        ],
-      ]
-    : [];
+
+  const keyboard: { text: string; url: string }[][] = [];
+  // Three buttons crowd onto one row on a phone, so email gets its own.
+  if (replyRow.length) {
+    keyboard.push(replyRow.slice(0, 2));
+    if (replyRow.length > 2) keyboard.push(replyRow.slice(2));
+  }
+  if (mapsQuery) {
+    keyboard.push([
+      {
+        text: "📍 Open in Maps",
+        url: `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(mapsQuery)}`,
+      },
+    ]);
+  }
 
   // Step 1: the details. If this fails there's no lead, so it's a hard error.
   const messageText = buildMessage(lead);
