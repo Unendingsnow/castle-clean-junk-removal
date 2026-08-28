@@ -229,13 +229,20 @@ export async function POST(request: Request) {
     fields.name = `Please keep this under ${NAME_MAX} characters.`;
 
   /**
-   * Both contact routes are now mandatory.
+   * Both contact routes are mandatory, at David's request.
    *
-   * This used to accept either one. It's a deliberate trade: requiring both
-   * costs some completed forms, but every lead that does arrive can be
-   * answered by text, call or email, which is what the reply buttons on the
-   * Telegram message depend on. A lead with only one of the two produces a
-   * notification with half its buttons missing.
+   * Note what this is *not* for: the reply keyboard doesn't need it. Those
+   * buttons are built independently — a phone-only lead still gets Text and
+   * Call, an email-only lead still gets Email — so the notification degrades
+   * fine either way.
+   *
+   * The actual gain is a fallback. One contact route means one chance: a
+   * mistyped digit or a dead mailbox and the lead is simply unreachable, with
+   * no way to tell that from a customer who changed their mind. Two routes
+   * means a wrong number can still be emailed.
+   *
+   * The cost is real and worth remembering if inquiry volume drops — every
+   * extra required field loses some completed forms.
    */
   const phoneDigits = phone.replace(/\D/g, "");
   if (!phone) fields.phone = "Please enter a phone number.";

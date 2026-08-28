@@ -144,8 +144,9 @@ export default function QuoteForm() {
     const errors: FieldErrors = {};
     if (!name.trim()) errors.name = "Please enter your name.";
 
-    // Both are required now, so the reply buttons on the Telegram
-    // notification always have something to point at.
+    // Both required, at David's request. Not because the Telegram reply
+    // buttons need it -- they're built per-channel and work fine with either
+    // one -- but so a wrong number still leaves a way to reach the customer.
     if (!phone.trim()) errors.phone = "Please enter a phone number.";
     else if (phone.replace(/\D/g, "").length < 7)
       errors.phone = "Please enter a valid phone number.";
