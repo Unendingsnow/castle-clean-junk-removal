@@ -1,6 +1,6 @@
 import type { Metadata, Viewport } from "next";
 import { Archivo, IBM_Plex_Mono } from "next/font/google";
-import { Analytics } from "@vercel/analytics/next";
+import SiteAnalytics from "@/components/SiteAnalytics";
 
 import { site } from "@/lib/site";
 import { siteUrl } from "@/lib/site-url";
@@ -87,8 +87,10 @@ export default function RootLayout({
     <html lang="en" className="scroll-smooth">
       <body className={`${archivo.variable} ${plexMono.variable} antialiased`}>
         {children}
-        {/* Cookieless, so no consent banner needed. No-ops off Vercel. */}
-        <Analytics />
+        {/* Cookieless, so no consent banner needed. No-ops off Vercel.
+            Wrapped so the /r handoff route, whose URL carries customer
+            contact details, is never reported. */}
+        <SiteAnalytics />
       </body>
     </html>
   );
