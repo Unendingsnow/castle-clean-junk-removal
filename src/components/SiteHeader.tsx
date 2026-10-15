@@ -48,12 +48,28 @@ export default function SiteHeader() {
           ))}
         </nav>
 
-        <a
-          href="#quote"
-          className="u-cta flex min-h-11 items-center rounded-lg bg-accent px-4 text-sm font-bold text-accent-ink transition hover:bg-accent-strong"
-        >
-          Get a price
-        </a>
+        <div className="flex items-center gap-3">
+          <a
+            href={`tel:${site.phoneE164}`}
+            aria-label={`Call ${site.phone}`}
+            className="flex min-h-11 items-center rounded-lg border border-line px-3.5 text-sm font-bold text-ink transition hover:border-ink"
+          >
+            Call<span className="hidden lg:inline">&nbsp;{site.phone}</span>
+          </a>
+          <a
+            href={`sms:${site.phoneE164}`}
+            aria-label={`Text ${site.phone}`}
+            className="flex min-h-11 items-center rounded-lg border border-line px-3.5 text-sm font-bold text-ink transition hover:border-ink"
+          >
+            Text
+          </a>
+          <a
+            href="#quote"
+            className="u-cta hidden min-h-11 items-center rounded-lg bg-accent px-4 text-sm font-bold text-accent-ink transition hover:bg-accent-strong sm:flex"
+          >
+            Get a price
+          </a>
+        </div>
       </div>
     </header>
   );

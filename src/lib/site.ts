@@ -10,11 +10,9 @@
  * - "You get the owner" is the actual competitive position. Junkluggers and
  *   College HUNKS sell speed and scale; neither can offer the person who
  *   quotes the job also being the person who shows up.
- * - No phone number on the visible page. Every inquiry routes through the form
- *   so it lands in Telegram with photos attached, and gets called back
- *   properly. The number does appear in structured data, because a
- *   LocalBusiness with no telephone at all is a local-ranking problem — see
- *   `phone` below.
+ * - The phone number is shown as tap-to-call in the header and footer, and in
+ *   structured data. The form is still the main route (photos land in
+ *   Telegram), but a visible number is there for people who'd rather call.
  * - No postal address anywhere, including structured data. David works out of
  *   his home, so it is never published — see `seo.postalAddress`.
  */
@@ -64,17 +62,10 @@ export const site = {
   email: "castleclean843@gmail.com",
 
   /**
-   * Published in structured data only — deliberately NOT rendered anywhere on
-   * the page.
-   *
-   * David advertises this number himself ("Call today") on his own Facebook
-   * posts, so it isn't private. It's here because Google Business Profile and
-   * local ranking both depend on a consistent NAP (name / address / phone),
-   * and the site previously supplied no phone at all.
-   *
-   * It stays out of the visible page so leads keep routing through the form,
-   * which is what delivers photos into Telegram. See the note in
-   * StructuredData.tsx about the trade-off this creates.
+   * Shown in the header and footer as tap-to-call, and published in structured
+   * data. David advertises this number himself ("Call today") on his own
+   * Facebook posts, so it isn't private, and local ranking depends on a
+   * consistent NAP (name / address / phone).
    */
   phone: "910-386-3056",
   /** E.164, which is the format schema.org and GBP both prefer. */

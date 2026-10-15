@@ -298,16 +298,12 @@ Name, slogan, copy, services and SEO details live in
 - `site.seo.postalAddress` — left `null` deliberately, since a made-up address
   is worse than none.
 
-### No public phone number
+### Public phone number
 
-Deliberate. Every enquiry routes through the form so it lands in Telegram with
-photos attached and a callback can be made properly. The customer supplies a
-phone number *or* an email — at least one, either is accepted — and the number
-is what renders as tap-to-call on David's side.
-
-Because there's no number to fall back to, every error state points at the
-email address instead. If you ever add a public number, those strings in
-`route.ts` need revisiting.
+David's number (`site.phone`) is shown as tap-to-call in the header and footer.
+The form is unchanged: leads still land in Telegram with photos attached. The
+error states in `route.ts` still point at the email address; they could be
+updated to mention the number too.
 
 ### Design system
 

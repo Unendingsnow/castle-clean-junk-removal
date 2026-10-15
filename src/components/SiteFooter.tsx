@@ -54,7 +54,21 @@ export default function SiteFooter() {
 
           <div className="text-sm">
             <p className="u-eyebrow text-[10px] text-inverse-dim">Contact</p>
-            <p className="mt-2">
+            <p className="mt-2 flex flex-wrap items-center gap-x-4">
+              <a
+                href={`tel:${site.phoneE164}`}
+                className="inline-flex min-h-11 items-center font-semibold text-inverse-accent transition hover:text-inverse-ink"
+              >
+                Call {site.phone}
+              </a>
+              <a
+                href={`sms:${site.phoneE164}`}
+                className="inline-flex min-h-11 items-center font-semibold text-inverse-accent transition hover:text-inverse-ink"
+              >
+                Text
+              </a>
+            </p>
+            <p className="mt-1">
               <a
                 href={`mailto:${site.email}`}
                 className="inline-flex min-h-11 items-center font-semibold text-inverse-accent transition hover:text-inverse-ink"
